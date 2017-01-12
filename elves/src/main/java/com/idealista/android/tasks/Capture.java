@@ -7,28 +7,28 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-package bolts;
+package com.idealista.android.tasks;
 
 /**
  * Provides a class that can be used for capturing variables in an anonymous class implementation.
- * 
+ *
  * @param <T>
  */
 public class Capture<T> {
-  private T value;
+    private T value;
 
-  public Capture() {
-  }
+    public Capture() {
+    }
 
-  public Capture(T value) {
-    this.value = value;
-  }
+    public Capture(T value) {
+        this.value = value;
+    }
 
-  public T get() {
-    return value;
-  }
+    public T get() {
+        return value;
+    }
 
-  public void set(T value) {
-    this.value = value;
-  }
+    public void set(T value) {
+        this.value = value;
+    }
 }

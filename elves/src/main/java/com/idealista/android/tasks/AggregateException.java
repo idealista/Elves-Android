@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-package bolts;
+package com.idealista.android.tasks;
 
 import java.io.PrintStream;
 import java.io.PrintWriter;
@@ -53,7 +53,7 @@ public class AggregateException extends Exception {
    */
   public AggregateException(String detailMessage, List<? extends Throwable> innerThrowables) {
     super(detailMessage,
-        innerThrowables != null && innerThrowables.size() > 0 ? innerThrowables.get(0) : null);
+            innerThrowables != null && innerThrowables.size() > 0 ? innerThrowables.get(0) : null);
     this.innerThrowables = Collections.unmodifiableList(innerThrowables);
   }
 

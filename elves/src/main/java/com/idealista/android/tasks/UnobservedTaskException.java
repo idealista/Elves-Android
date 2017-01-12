@@ -1,10 +1,10 @@
-package bolts;
+package com.idealista.android.tasks;
 
 /**
  * Used to signify that a Task's error went unobserved.
  */
 public class UnobservedTaskException extends RuntimeException {
-  public UnobservedTaskException(Throwable cause) {
-    super(cause);
-  }
+    public UnobservedTaskException(Throwable cause) {
+        super(cause);
+    }
 }

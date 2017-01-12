@@ -9,6 +9,11 @@
  */
 package bolts;
 
+import com.idealista.android.tasks.*;
+import com.idealista.android.tasks.CancellationTokenRegistration;
+import com.idealista.android.tasks.CancellationTokenSource;
+import com.idealista.android.tasks.Capture;
+
 import org.junit.Test;
 
 import java.util.concurrent.CancellationException;
@@ -23,8 +28,8 @@ public class CancellationTest {
 
   @Test
   public void testTokenIsCancelled() {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
 
     assertFalse(token.isCancellationRequested());
     assertFalse(cts.isCancellationRequested());
@@ -37,8 +42,8 @@ public class CancellationTest {
 
   @Test
   public void testTokenIsCancelledAfterNoDelay() throws Exception {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
 
     assertFalse(token.isCancellationRequested());
 
@@ -50,8 +55,8 @@ public class CancellationTest {
 
   @Test
   public void testTokenIsCancelledAfterDelay() throws Exception {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
 
     assertFalse(token.isCancellationRequested());
 
@@ -68,8 +73,8 @@ public class CancellationTest {
 
   @Test
   public void testTokenCancelAfterDelayCancellation() throws Exception {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
 
     assertFalse(token.isCancellationRequested());
 
@@ -88,8 +93,8 @@ public class CancellationTest {
 
   @Test
   public void testTokenThrowsWhenCancelled() {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
 
     try {
       token.throwIfCancellationRequested();
@@ -110,9 +115,9 @@ public class CancellationTest {
 
   @Test
   public void testTokenCallsRegisteredActionWhenCancelled() {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
-    final Capture<Object> result = new Capture<>();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
+    final com.idealista.android.tasks.Capture<Object> result = new com.idealista.android.tasks.Capture<>();
 
     token.register(new Runnable() {
       @Override
@@ -130,9 +135,9 @@ public class CancellationTest {
 
   @Test
   public void testCancelledTokenCallsRegisteredActionImmediately() {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
-    final Capture<Object> result = new Capture<>();
+    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
+    final com.idealista.android.tasks.Capture<Object> result = new com.idealista.android.tasks.Capture<>();
 
     cts.cancel();
 
@@ -148,10 +153,10 @@ public class CancellationTest {
 
   @Test
   public void testTokenDoesNotCallUnregisteredAction() {
-    CancellationTokenSource cts = new CancellationTokenSource();
-    CancellationToken token = cts.getToken();
-    final Capture<Object> result1 = new Capture<>();
-    final Capture<Object> result2 = new Capture<>();
+    com.idealista.android.tasks.CancellationTokenSource cts = new CancellationTokenSource();
+    com.idealista.android.tasks.CancellationToken token = cts.getToken();
+    final com.idealista.android.tasks.Capture<Object> result1 = new com.idealista.android.tasks.Capture<>();
+    final com.idealista.android.tasks.Capture<Object> result2 = new Capture<>();
 
     CancellationTokenRegistration registration1 = token.register(new Runnable() {
       @Override

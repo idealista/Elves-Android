@@ -7,7 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-package bolts;
+package com.idealista.android.tasks;
 
 /**
  * A function to be called after a task completes.
@@ -18,5 +18,5 @@ package bolts;
  * @see Task
  */
 public interface Continuation<TTaskResult, TContinuationResult> {
-  TContinuationResult then(Task<TTaskResult> task) throws Exception;
+    TContinuationResult then(Task<TTaskResult> task) throws Exception;
 }
