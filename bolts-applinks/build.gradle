@@ -24,7 +24,7 @@ android {
 }
 
 dependencies {
-    compile project(':bolts-tasks')
+    compile project(':elves')
 
     testCompile 'junit:junit:4.12'
 

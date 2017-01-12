@@ -1,3 +1,3 @@
 include ':bolts-android', ':sample',
-        ':bolts-tasks',
+        ':elves',
         ':bolts-applinks'
