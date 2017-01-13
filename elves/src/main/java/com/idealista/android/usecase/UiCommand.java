@@ -1,10 +1,7 @@
 package com.idealista.android.usecase;
 
-public interface UiCommand<VResults, TResults>  {
 
-    void execute();
-
-    void cancel();
+public interface UiCommand<VResults, TResults> {
 
     TResults background(VResults results);
 

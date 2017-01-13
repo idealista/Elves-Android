@@ -71,7 +71,7 @@ public final class AndroidExecutors {
                 CORE_POOL_SIZE,
                 MAX_POOL_SIZE,
                 KEEP_ALIVE_TIME, TimeUnit.SECONDS,
-                new LinkedBlockingQueue<>());
+                new LinkedBlockingQueue<Runnable>());
 
         allowCoreThreadTimeout(executor, true);
 

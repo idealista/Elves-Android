@@ -3,6 +3,9 @@ apply plugin: 'java'
 group = GROUP_NAME
 version = VERSION_NAME
 
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
 configurations {
     provided
 }
