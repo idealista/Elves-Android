@@ -15,6 +15,7 @@ public abstract class Activity<P extends Presenter> extends AppCompatActivity im
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
+        prepare();
         presenter = getPresenter();
     }
 

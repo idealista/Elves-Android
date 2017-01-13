@@ -6,45 +6,36 @@ import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.model.MovieModel;
 
-public class MovieView extends LinearLayout {
+public class MovieView extends LinearView<MovieModel> {
 
     private TextView textViewTitle;
     private OnMovieClickListener onMovieClickListener;
 
     public MovieView(Context context) {
-        this(context, null);
+        super(context);
     }
 
     public MovieView(Context context, @Nullable AttributeSet attrs) {
-        this(context, attrs, 0);
+        super(context, attrs);
     }
 
     public MovieView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
     public MovieView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
-        init();
     }
 
-    public void render(final MovieModel movie) {
-        textViewTitle.setText(movie.getTitle());
-        initOnClickListener(movie);
-    }
-
-    private void initOnClickListener(final MovieModel movie) {
-        setOnClickListener(new OnClickListener() {
+    private OnClickListener getOnClickListener(final MovieModel movie) {
+        return new OnClickListener() {
 
             @Override
             public void onClick(View view) {
@@ -52,17 +43,27 @@ public class MovieView extends LinearLayout {
                     onMovieClickListener.onClick(movie);
                 }
             }
-        });
+        };
     }
 
-    private void init() {
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.view_movie, this, true);
-        textViewTitle = (TextView) findViewById(R.id.tvTitle);
+    @Override
+    public void render(final MovieModel movie) {
+        textViewTitle.setText(movie.getTitle());
+        setOnClickListener(getOnClickListener(movie));
     }
 
     public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
         this.onMovieClickListener = onMovieClickListener;
+    }
+
+    @Override
+    public void prepare() {
+        textViewTitle = (TextView) findViewById(R.id.tvTitle);
+    }
+
+    @Override
+    public int getLayoutId() {
+        return R.layout.view_movie;
     }
 
     public interface OnMovieClickListener {

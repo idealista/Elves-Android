@@ -1,9 +1,23 @@
 package com.idealista.android.usecase;
 
-public interface Command  {
+import com.idealista.android.mvp.AutoStoppable;
 
-    void execute();
+public abstract class Command<TView> {
 
-    void cancel();
+    protected final TView view;
+    protected final AutoStoppable autoStoppable;
+
+    public Command(TView view, AutoStoppable autoStoppable) {
+        this.view = view;
+        this.autoStoppable = autoStoppable;
+    }
+
+    public void execute() {
+        if (autoStoppable != null) {
+            autoStoppable.addCommand(this);
+        }
+    }
+
+    public abstract void cancel();
 
 }

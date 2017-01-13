@@ -11,21 +11,18 @@ import com.idealista.android.usecase.UiCommand;
 
 import java.util.List;
 
-public class GetTitleCommand implements Command, UiCommand<List<String>, MoviesModel> {
+public class GetTitleCommand extends Command<MainView> implements UiCommand<List<String>, MoviesModel> {
 
-    private final MainView view;
     private final GetTitlesUseCase useCase;
-    private final AutoStoppable autoStoppable;
 
     public GetTitleCommand(MainView view, AutoStoppable autoStoppable) {
-        this.view = view;
-        this.autoStoppable = autoStoppable;
+        super(view, autoStoppable);
         useCase = new GetTitlesUseCase();
     }
 
     @Override
     public void execute() {
-        autoStoppable.addCommand(this);
+        super.execute();
         useCase.execute(this);
     }
 
@@ -45,7 +42,7 @@ public class GetTitleCommand implements Command, UiCommand<List<String>, MoviesM
 
     @Override
     public void ui(MoviesModel movies) {
-//        view.clearMovies();
+        view.clearMovies();
         view.addMovies(movies);
     }
 
