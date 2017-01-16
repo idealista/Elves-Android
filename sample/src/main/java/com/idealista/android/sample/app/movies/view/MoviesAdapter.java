@@ -8,12 +8,12 @@ import android.view.ViewGroup;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
 
-public class MainMovieAdapter extends RecyclerView.Adapter<MainMovieAdapter.ViewHolder> {
+public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private MoviesModel moviesModel;
     private final MovieView.OnMovieClickListener onMovieClickListener;
 
-    public MainMovieAdapter(MovieView.OnMovieClickListener onMovieClickListener) {
+    public MoviesAdapter(MovieView.OnMovieClickListener onMovieClickListener) {
         this.onMovieClickListener = onMovieClickListener;
         this.moviesModel = new MoviesModel();
     }

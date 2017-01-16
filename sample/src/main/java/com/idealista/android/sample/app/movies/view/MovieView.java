@@ -33,7 +33,6 @@ public class MovieView extends LinearView<MovieModel> {
     public MovieView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-
     private OnClickListener getOnClickListener(final MovieModel movie) {
         return new OnClickListener() {
 
@@ -52,10 +51,6 @@ public class MovieView extends LinearView<MovieModel> {
         setOnClickListener(getOnClickListener(movie));
     }
 
-    public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
-        this.onMovieClickListener = onMovieClickListener;
-    }
-
     @Override
     public void prepare() {
         textViewTitle = (TextView) findViewById(R.id.tvTitle);
@@ -66,7 +61,9 @@ public class MovieView extends LinearView<MovieModel> {
         return R.layout.view_movie;
     }
 
-    public interface OnMovieClickListener {
-        void onClick(final MovieModel movieModel);
+    public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
+        this.onMovieClickListener = onMovieClickListener;
     }
+
+
 }

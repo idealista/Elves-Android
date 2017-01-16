@@ -11,7 +11,7 @@ public class NavigatorProvider {
         this.activity = activity;
     }
 
-    public DetailNavigator getDetailNavigator() {
+    public Navigator getDetailNavigator() {
         return new DetailNavigator(activity);
     }
 

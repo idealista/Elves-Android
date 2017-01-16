@@ -3,7 +3,7 @@ package com.idealista.android.sample.app.movies.presenter.command;
 
 import com.idealista.android.mvp.AutoStoppable;
 import com.idealista.android.sample.app.movies.usecase.GetTitlesUseCase;
-import com.idealista.android.sample.app.movies.view.MainView;
+import com.idealista.android.sample.app.movies.view.MoviesView;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
 import com.idealista.android.usecase.Command;
@@ -11,11 +11,11 @@ import com.idealista.android.usecase.UiCommand;
 
 import java.util.List;
 
-public class GetTitleCommand extends Command<MainView> implements UiCommand<List<String>, MoviesModel> {
+public class GetTitleCommand extends Command<MoviesView> implements UiCommand<List<String>, MoviesModel> {
 
     private final GetTitlesUseCase useCase;
 
-    public GetTitleCommand(MainView view, AutoStoppable autoStoppable) {
+    public GetTitleCommand(MoviesView view, AutoStoppable autoStoppable) {
         super(view, autoStoppable);
         useCase = new GetTitlesUseCase();
     }

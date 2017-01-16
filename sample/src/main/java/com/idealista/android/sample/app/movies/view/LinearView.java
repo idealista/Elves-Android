@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import com.idealista.android.mvp.view.CustomView;
 
 public abstract class LinearView<TViewModel> extends LinearLayout implements CustomView {
+
     public LinearView(Context context) {
         this(context, null);
     }
@@ -31,11 +32,15 @@ public abstract class LinearView<TViewModel> extends LinearLayout implements Cus
         init();
     }
 
-    private void init(){
+    private void init() {
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         inflater.inflate(getLayoutId(), this, true);
         prepare();
     }
 
     public abstract void render(TViewModel viewModel);
+
+    public interface OnMovieClickListener<TViewModel> {
+        void onClick(final TViewModel movieModel);
+    }
 }

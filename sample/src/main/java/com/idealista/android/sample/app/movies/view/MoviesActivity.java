@@ -12,9 +12,9 @@ import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
 import com.idealista.android.sample.app.movies.presenter.MainPresenter;
 
-public class MainActivity extends Activity<MainPresenter> implements MainView {
+public class MoviesActivity extends Activity<MainPresenter> implements MoviesView {
 
-    private MainMovieAdapter movieAdapter;
+    private MoviesAdapter movieAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,7 +55,7 @@ public class MainActivity extends Activity<MainPresenter> implements MainView {
         RecyclerView.LayoutManager manager =
                 new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        movieAdapter = new MainMovieAdapter(onMovieClickListener);
+        movieAdapter = new MoviesAdapter(onMovieClickListener);
         recyclerView.setAdapter(movieAdapter);
     }
 }
