@@ -5,13 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
+import com.idealista.android.elvesandroid.navigator.navigator.Navigator;
 import com.idealista.android.elvesandroid.navigator.view.Activity;
-import com.idealista.android.elvesandroid.navigator.view.PresenterFactory;
 import com.idealista.android.sample.R;
-import com.idealista.android.sample.app.common.navigator.NavigatorProvider;
+import com.idealista.android.sample.app.common.navigator.DetailNavigator;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
-import com.idealista.android.sample.app.movies.AppPresenterFactory;
 import com.idealista.android.sample.app.movies.adapter.MoviesAdapter;
 import com.idealista.android.sample.app.movies.presenter.MoviesPresenter;
 
@@ -22,12 +21,6 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        presenter.setNavigatorProvider(new NavigatorProvider(this));
-    }
-
-    @Override
-    public PresenterFactory<MoviesPresenter> getPresenterFactory() {
-        return new AppPresenterFactory<MoviesPresenter>();
     }
 
     @Override
@@ -41,11 +34,17 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
     }
 
     private MovieView.OnClicked<MovieModel> onClickListener = new MovieView.OnClicked<MovieModel>() {
+
         @Override
         public void onClick(MovieModel movieModel) {
-            presenter.onMovieClicked(movieModel);
+            notifyPresenterMovieClicked(movieModel);
         }
     };
+
+    private void notifyPresenterMovieClicked(MovieModel movieModel) {
+        Navigator navigatorMovie = getNavigator(this, DetailNavigator.class);
+        presenter.onMovieClicked(movieModel, navigatorMovie);
+    }
 
     @Override
     public void addMovies(MoviesModel movies) {

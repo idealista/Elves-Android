@@ -7,16 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-package bolts;
-
-import com.idealista.android.tasks.*;
-import com.idealista.android.tasks.CancellationTokenSource;
-import com.idealista.android.tasks.Capture;
-import com.idealista.android.tasks.Continuation;
-import com.idealista.android.tasks.ExecutorException;
-import com.idealista.android.tasks.Task;
-import com.idealista.android.tasks.TaskCompletionSource;
-import com.idealista.android.tasks.UnobservedTaskException;
+package com.idealista.android.tasks;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -1238,11 +1229,11 @@ public class TaskTest {
   @SuppressWarnings("deprecation")
   @Test
   public void testDeprecatedTaskCompletionSource() {
-    com.idealista.android.tasks.Task<Void>.TaskCompletionSource tcsA = com.idealista.android.tasks.Task.create();
+    TaskCompletionSource tcsA = new TaskCompletionSource();
     tcsA.setResult(null);
     assertTrue(tcsA.getTask().isCompleted());
 
-    TaskCompletionSource<Void> tcsB = Task.create();
+    TaskCompletionSource<Void> tcsB = new TaskCompletionSource<>();
     tcsB.setResult(null);
     assertTrue(tcsA.getTask().isCompleted());
   }

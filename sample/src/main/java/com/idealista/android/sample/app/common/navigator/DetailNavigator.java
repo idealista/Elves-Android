@@ -5,13 +5,13 @@ import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 
-import com.idealista.android.elvesandroid.navigator.Navigator;
+import com.idealista.android.elvesandroid.navigator.navigator.Navigator;
 import com.idealista.android.sample.app.model.MovieModel;
-import com.idealista.android.sample.app.movie.MovieActivity;
+import com.idealista.android.sample.app.movie.view.MovieActivity;
 
 public class DetailNavigator extends Navigator<MovieModel> {
 
-    DetailNavigator(Activity activity) {
+    public DetailNavigator(Activity activity) {
         super(activity);
     }
 

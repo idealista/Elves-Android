@@ -7,12 +7,7 @@
  *  of patent rights can be found in the PATENTS file in the same directory.
  *
  */
-package bolts;
-
-import com.idealista.android.tasks.*;
-import com.idealista.android.tasks.CancellationTokenRegistration;
-import com.idealista.android.tasks.CancellationTokenSource;
-import com.idealista.android.tasks.Capture;
+package com.idealista.android.tasks;
 
 import org.junit.Test;
 

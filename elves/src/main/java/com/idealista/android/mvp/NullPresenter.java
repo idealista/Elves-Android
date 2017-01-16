@@ -1,9 +1,9 @@
 package com.idealista.android.mvp;
 
 
-public class EmptyPresenter extends Presenter<View> {
+public class NullPresenter extends Presenter<View> {
 
-    public EmptyPresenter(View view) {
+    public NullPresenter(View view) {
         super(view);
     }
 
