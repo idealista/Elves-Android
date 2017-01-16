@@ -1,4 +1,4 @@
-package com.idealista.android.sample.app.movies.view;
+package com.idealista.android.elvesandroid.navigator.view.widget;
 
 
 import android.content.Context;
@@ -40,7 +40,4 @@ public abstract class LinearView<TViewModel> extends LinearLayout implements Cus
 
     public abstract void render(TViewModel viewModel);
 
-    public interface OnMovieClickListener<TViewModel> {
-        void onClick(final TViewModel movieModel);
-    }
 }

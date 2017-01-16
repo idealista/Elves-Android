@@ -1,8 +1,8 @@
 package com.idealista.android.sample.app.movies.presenter.command;
 
 
-import com.idealista.android.mvp.AutoStoppable;
-import com.idealista.android.sample.app.movies.usecase.GetTitlesUseCase;
+import com.idealista.android.mvp.Presenter;
+import com.idealista.android.sample.app.movies.presenter.command.usecase.GetTitlesUseCase;
 import com.idealista.android.sample.app.movies.view.MoviesView;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
@@ -15,14 +15,13 @@ public class GetTitleCommand extends Command<MoviesView> implements UiCommand<Li
 
     private final GetTitlesUseCase useCase;
 
-    public GetTitleCommand(MoviesView view, AutoStoppable autoStoppable) {
-        super(view, autoStoppable);
+    public GetTitleCommand(MoviesView view, Presenter presenter) {
+        super(view);
         useCase = new GetTitlesUseCase();
+        presenter.addCommand(this);
     }
 
-    @Override
     public void execute() {
-        super.execute();
         useCase.execute(this);
     }
 

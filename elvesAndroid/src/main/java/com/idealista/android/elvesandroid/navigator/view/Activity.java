@@ -1,11 +1,10 @@
-package com.idealista.android.sample.app.common;
+package com.idealista.android.elvesandroid.navigator.view;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import com.idealista.android.mvp.Presenter;
 import com.idealista.android.mvp.View;
-import com.idealista.android.sample.app.movies.PresenterFactory;
 
 public abstract class Activity<P extends Presenter> extends AppCompatActivity implements View {
 
@@ -32,9 +31,11 @@ public abstract class Activity<P extends Presenter> extends AppCompatActivity im
     }
 
     private P getPresenter() {
-        PresenterFactory<P> presenterFactory = new PresenterFactory<>();
+        PresenterFactory<P> presenterFactory = getPresenterFactory();
         return presenterFactory.getPresenter(this);
     }
+
+    public abstract PresenterFactory<P> getPresenterFactory();
 
     public abstract int getLayoutId();
 

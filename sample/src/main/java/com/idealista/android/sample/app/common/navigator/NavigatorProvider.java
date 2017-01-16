@@ -3,6 +3,8 @@ package com.idealista.android.sample.app.common.navigator;
 
 import android.app.Activity;
 
+import com.idealista.android.elvesandroid.navigator.Navigator;
+
 public class NavigatorProvider {
 
     private final Activity activity;

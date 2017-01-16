@@ -1,4 +1,4 @@
-package com.idealista.android.sample.app.movies.view;
+package com.idealista.android.sample.app.movies.adapter;
 
 
 import android.support.v7.widget.RecyclerView;
@@ -7,14 +7,15 @@ import android.view.ViewGroup;
 
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
+import com.idealista.android.sample.app.movies.view.MovieView;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder> {
 
     private MoviesModel moviesModel;
-    private final MovieView.OnMovieClickListener onMovieClickListener;
+    private final MovieView.OnClicked<MovieModel> onClickListener;
 
-    public MoviesAdapter(MovieView.OnMovieClickListener onMovieClickListener) {
-        this.onMovieClickListener = onMovieClickListener;
+    public MoviesAdapter(MovieView.OnClicked<MovieModel> onClickListener) {
+        this.onClickListener = onClickListener;
         this.moviesModel = new MoviesModel();
     }
 
@@ -32,7 +33,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.ViewHolder
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         MovieView movieView = new MovieView(parent.getContext());
-        movieView.setOnMovieClickListener(onMovieClickListener);
+        movieView.setOnClicked(onClickListener);
         return new ViewHolder(movieView);
     }
 

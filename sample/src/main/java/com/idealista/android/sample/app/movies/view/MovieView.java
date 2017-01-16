@@ -9,13 +9,14 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.idealista.android.elvesandroid.navigator.view.widget.LinearView;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.model.MovieModel;
 
 public class MovieView extends LinearView<MovieModel> {
 
     private TextView textViewTitle;
-    private OnMovieClickListener onMovieClickListener;
+    private OnClicked onClicked;
 
     public MovieView(Context context) {
         super(context);
@@ -33,13 +34,14 @@ public class MovieView extends LinearView<MovieModel> {
     public MovieView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
     }
-    private OnClickListener getOnClickListener(final MovieModel movie) {
-        return new OnClickListener() {
+
+    private View.OnClickListener getOnClickListener(final MovieModel movie) {
+        return new View.OnClickListener() {
 
             @Override
             public void onClick(View view) {
-                if (onMovieClickListener != null) {
-                    onMovieClickListener.onClick(movie);
+                if (onClicked != null) {
+                    onClicked.onClick(movie);
                 }
             }
         };
@@ -61,9 +63,12 @@ public class MovieView extends LinearView<MovieModel> {
         return R.layout.view_movie;
     }
 
-    public void setOnMovieClickListener(OnMovieClickListener onMovieClickListener) {
-        this.onMovieClickListener = onMovieClickListener;
+    public void setOnClicked(OnClicked<MovieModel> onClicked) {
+        this.onClicked = onClicked;
     }
 
+    public interface OnClicked<TViewModel> {
+        void onClick(final TViewModel movieModel);
+    }
 
 }

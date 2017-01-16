@@ -1,4 +1,4 @@
-package com.idealista.android.sample;
+package com.idealista.android.elvesandroid.navigator;
 
 
 import android.app.Application;

@@ -5,7 +5,7 @@ import com.idealista.android.usecase.Command;
 import java.util.ArrayList;
 import java.util.List;
 
-public abstract class Presenter<V extends View> implements AutoStoppable {
+public abstract class Presenter<V extends View>{
 
     protected final V view;
     private List<Command> commands;
@@ -22,7 +22,6 @@ public abstract class Presenter<V extends View> implements AutoStoppable {
         }
     }
 
-    @Override
     public void addCommand(Command command) {
         synchronized (lock) {
             commands.add(command);

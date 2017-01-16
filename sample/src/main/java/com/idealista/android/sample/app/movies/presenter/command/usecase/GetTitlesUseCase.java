@@ -1,4 +1,4 @@
-package com.idealista.android.sample.app.movies.usecase;
+package com.idealista.android.sample.app.movies.presenter.command.usecase;
 
 
 import com.idealista.android.sample.app.model.MoviesModel;
