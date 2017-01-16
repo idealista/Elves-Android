@@ -3,6 +3,7 @@ package com.idealista.android.sample.app.movie.presenter;
 
 import com.idealista.android.mvp.Presenter;
 import com.idealista.android.sample.app.model.MovieModel;
+import com.idealista.android.sample.app.movie.presenter.command.SetTitleCommand;
 import com.idealista.android.sample.app.movie.view.MovieView;
 
 public class MoviePresenter extends Presenter<MovieView> {
@@ -15,7 +16,7 @@ public class MoviePresenter extends Presenter<MovieView> {
 
     @Override
     public void start() {
-        view.setTitle(movieModel.getTitle());
+        new SetTitleCommand(view, movieModel).execute();
     }
 
     public void setMovie(MovieModel movieModel) {
