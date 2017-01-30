@@ -7,7 +7,7 @@ import com.idealista.android.tasks.Task;
 
 import java.util.concurrent.Callable;
 
-public abstract class UseCase<TViewObjects, VDomainObject> {
+public abstract class UseCase<VDomainObject, TViewObjects> {
 
     private CancellationTokenSource cancellationTokenSource;
 

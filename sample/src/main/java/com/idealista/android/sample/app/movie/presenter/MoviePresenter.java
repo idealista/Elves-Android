@@ -1,7 +1,7 @@
 package com.idealista.android.sample.app.movie.presenter;
 
 
-import com.idealista.android.mvp.Presenter;
+import com.idealista.android.elvesandroid.navigator.view.mvp.Presenter;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.movie.presenter.command.SetTitleCommand;
 import com.idealista.android.sample.app.movie.view.MovieView;

@@ -2,9 +2,9 @@ package com.idealista.android.sample.app.common.presenter;
 
 
 import com.idealista.android.elvesandroid.navigator.view.PresenterFactory;
-import com.idealista.android.mvp.NullPresenter;
-import com.idealista.android.mvp.Presenter;
-import com.idealista.android.mvp.View;
+import com.idealista.android.elvesandroid.navigator.view.mvp.EmptyPresenter;
+import com.idealista.android.elvesandroid.navigator.view.mvp.Presenter;
+import com.idealista.android.elvesandroid.navigator.view.mvp.View;
 import com.idealista.android.sample.app.movie.presenter.MoviePresenter;
 import com.idealista.android.sample.app.movie.view.MovieView;
 import com.idealista.android.sample.app.movies.presenter.MoviesPresenter;
@@ -26,7 +26,7 @@ public class AppPresenterFactory<P extends Presenter> implements PresenterFactor
             MovieView castedView = (MovieView) view;
             presenter = new MoviePresenter(castedView);
         } else {
-            presenter = new NullPresenter(view);
+            presenter = new EmptyPresenter(view);
         }
 
         return (P) presenter;

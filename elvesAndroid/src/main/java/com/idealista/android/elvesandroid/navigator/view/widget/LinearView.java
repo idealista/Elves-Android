@@ -9,9 +9,9 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
-import com.idealista.android.mvp.view.CustomView;
+import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomView;
 
-public abstract class LinearView<TViewModel> extends LinearLayout implements CustomView {
+public abstract class LinearView<TViewModel> extends LinearLayout implements CustomView<TViewModel> {
 
     public LinearView(Context context) {
         this(context, null);
@@ -37,7 +37,4 @@ public abstract class LinearView<TViewModel> extends LinearLayout implements Cus
         inflater.inflate(getLayoutId(), this, true);
         prepare();
     }
-
-    public abstract void render(TViewModel viewModel);
-
 }

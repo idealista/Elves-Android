@@ -6,17 +6,20 @@ import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
 import com.idealista.android.elvesandroid.navigator.navigator.Navigator;
-import com.idealista.android.elvesandroid.navigator.view.Activity;
+import com.idealista.android.elvesandroid.navigator.view.Adapter;
+import com.idealista.android.elvesandroid.navigator.view.mvp.Activity;
+import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomViewCreator;
+import com.idealista.android.elvesandroid.navigator.view.mvp.view.OnClicked;
 import com.idealista.android.sample.R;
+import com.idealista.android.sample.app.common.customview.CustomViewFactory;
 import com.idealista.android.sample.app.common.navigator.DetailNavigator;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
-import com.idealista.android.sample.app.movies.adapter.MoviesAdapter;
 import com.idealista.android.sample.app.movies.presenter.MoviesPresenter;
 
 public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesView {
 
-    private MoviesAdapter movieAdapter;
+    private Adapter<MovieModel> adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,10 +33,10 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
 
     @Override
     public void clearMovies() {
-        movieAdapter.clear();
+        adapter.clear();
     }
 
-    private MovieView.OnClicked<MovieModel> onClickListener = new MovieView.OnClicked<MovieModel>() {
+    private OnClicked<MovieModel> onClickListener = new OnClicked<MovieModel>() {
 
         @Override
         public void onClick(MovieModel movieModel) {
@@ -48,7 +51,7 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
 
     @Override
     public void addMovies(MoviesModel movies) {
-        movieAdapter.add(movies);
+        adapter.add(movies);
     }
 
     @Override
@@ -62,7 +65,8 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
         RecyclerView.LayoutManager manager =
                 new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        movieAdapter = new MoviesAdapter(onClickListener);
-        recyclerView.setAdapter(movieAdapter);
+        CustomViewCreator<MovieModel> customViewCreator = new CustomViewFactory().getMovieViewCreator();
+        adapter = new Adapter<>(onClickListener, customViewCreator);
+        recyclerView.setAdapter(adapter);
     }
 }

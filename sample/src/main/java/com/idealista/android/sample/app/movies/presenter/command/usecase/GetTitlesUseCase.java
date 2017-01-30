@@ -1,6 +1,5 @@
 package com.idealista.android.sample.app.movies.presenter.command.usecase;
 
-
 import com.idealista.android.sample.app.model.MoviesModel;
 import com.idealista.android.usecase.UseCase;
 
@@ -8,7 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
-public class GetTitlesUseCase extends UseCase<MoviesModel, List<String>> {
+public class GetTitlesUseCase extends UseCase<List<String>, MoviesModel> {
 
     @Override
     protected Callable<List<String>> build() {

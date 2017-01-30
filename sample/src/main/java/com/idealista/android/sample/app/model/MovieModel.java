@@ -4,7 +4,7 @@ package com.idealista.android.sample.app.model;
 import android.os.Parcel;
 import android.os.Parcelable;
 
-import com.idealista.android.mvp.View;
+import com.idealista.android.elvesandroid.navigator.view.mvp.View;
 
 public class MovieModel implements View, Parcelable {
 

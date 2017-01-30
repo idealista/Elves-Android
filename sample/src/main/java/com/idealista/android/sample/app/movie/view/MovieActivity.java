@@ -3,7 +3,7 @@ package com.idealista.android.sample.app.movie.view;
 
 import android.os.Bundle;
 
-import com.idealista.android.elvesandroid.navigator.view.Activity;
+import com.idealista.android.elvesandroid.navigator.view.mvp.Activity;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.common.navigator.Extras;
 import com.idealista.android.sample.app.model.MovieModel;

@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
+import com.idealista.android.elvesandroid.navigator.view.mvp.view.OnClicked;
 import com.idealista.android.elvesandroid.navigator.view.widget.LinearView;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.model.MovieModel;
@@ -16,7 +17,7 @@ import com.idealista.android.sample.app.model.MovieModel;
 public class MovieView extends LinearView<MovieModel> {
 
     private TextView textViewTitle;
-    private OnClicked onClicked;
+    private OnClicked<MovieModel> onClicked;
 
     public MovieView(Context context) {
         super(context);
@@ -63,12 +64,10 @@ public class MovieView extends LinearView<MovieModel> {
         return R.layout.view_movie;
     }
 
+    @Override
     public void setOnClicked(OnClicked<MovieModel> onClicked) {
         this.onClicked = onClicked;
     }
 
-    public interface OnClicked<TViewModel> {
-        void onClick(final TViewModel movieModel);
-    }
 
 }

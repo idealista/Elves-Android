@@ -1,7 +1,7 @@
 package com.idealista.android.sample.app.movies.view;
 
 
-import com.idealista.android.mvp.View;
+import com.idealista.android.elvesandroid.navigator.view.mvp.View;
 import com.idealista.android.sample.app.model.MoviesModel;
 
 public interface MoviesView extends View {

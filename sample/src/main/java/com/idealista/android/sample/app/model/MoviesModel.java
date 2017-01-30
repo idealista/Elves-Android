@@ -1,10 +1,12 @@
 package com.idealista.android.sample.app.model;
 
 
+import com.idealista.android.business.Listable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesModel {
+public class MoviesModel implements Listable<MovieModel> {
 
     private List<MovieModel> list;
 
@@ -12,15 +14,18 @@ public class MoviesModel {
         this.list = new ArrayList<>();
     }
 
+    @Override
     public int add(MovieModel movie) {
         list.add(movie);
         return list.indexOf(movie);
     }
 
+    @Override
     public int size() {
         return list.size();
     }
 
+    @Override
     public MovieModel get(int position) {
         return list.get(position);
     }
