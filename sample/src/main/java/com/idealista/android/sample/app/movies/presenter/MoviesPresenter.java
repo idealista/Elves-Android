@@ -23,7 +23,7 @@ public class MoviesPresenter extends Presenter<MoviesView> {
 
     }
 
-    public void onMovieClicked(MovieModel movie, Navigator<MovieModel> navigator) {
-        navigator.goTo(movie);
+    public void onMovieClicked(MovieModel movie, Navigator<MovieModel> toMovieNavigator) {
+        toMovieNavigator.goTo(movie);
     }
 }

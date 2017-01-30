@@ -45,7 +45,7 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
     };
 
     private void notifyPresenterMovieClicked(MovieModel movieModel) {
-        Navigator navigatorMovie = getNavigator(this, DetailNavigator.class);
+        Navigator<MovieModel> navigatorMovie = getNavigator(this, DetailNavigator.class);
         presenter.onMovieClicked(movieModel, navigatorMovie);
     }
 
