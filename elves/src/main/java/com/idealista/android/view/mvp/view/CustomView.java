@@ -1,4 +1,4 @@
-package com.idealista.android.elvesandroid.navigator.view.mvp.view;
+package com.idealista.android.view.mvp.view;
 
 public interface CustomView<TViewModel> {
 

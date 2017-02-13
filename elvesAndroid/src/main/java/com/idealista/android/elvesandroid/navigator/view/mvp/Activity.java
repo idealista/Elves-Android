@@ -6,7 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.idealista.android.elvesandroid.navigator.App;
 import com.idealista.android.elvesandroid.navigator.navigator.Navigator;
 import com.idealista.android.elvesandroid.navigator.navigator.NavigatorFactory;
-import com.idealista.android.elvesandroid.navigator.view.PresenterFactory;
+import com.idealista.android.view.mvp.PresenterFactory;
+import com.idealista.android.view.mvp.Presenter;
+import com.idealista.android.view.mvp.View;
 
 public abstract class Activity<P extends Presenter> extends AppCompatActivity implements View {
 

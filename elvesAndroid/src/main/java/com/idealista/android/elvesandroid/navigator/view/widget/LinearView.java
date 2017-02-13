@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.LinearLayout;
 
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomView;
+import com.idealista.android.view.mvp.view.CustomView;
 
 public abstract class LinearView<TViewModel> extends LinearLayout implements CustomView<TViewModel> {
 

@@ -7,7 +7,7 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.idealista.android.elvesandroid.navigator.navigator.NavigatorFactory;
-import com.idealista.android.elvesandroid.navigator.view.PresenterFactory;
+import com.idealista.android.view.mvp.PresenterFactory;
 import com.idealista.android.tasks.AndroidExecutors;
 
 import java.util.concurrent.Executor;

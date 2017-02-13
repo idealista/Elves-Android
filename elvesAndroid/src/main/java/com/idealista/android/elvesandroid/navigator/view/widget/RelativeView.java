@@ -9,7 +9,7 @@ import android.util.AttributeSet;
 import android.view.LayoutInflater;
 import android.widget.RelativeLayout;
 
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomView;
+import com.idealista.android.view.mvp.view.CustomView;
 
 public abstract class RelativeView<TViewModel> extends RelativeLayout implements CustomView<TViewModel> {
 

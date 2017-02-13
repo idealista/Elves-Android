@@ -6,9 +6,9 @@ import android.view.ViewGroup;
 
 import com.idealista.android.business.EmptyList;
 import com.idealista.android.business.Listable;
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomView;
+import com.idealista.android.view.mvp.view.CustomView;
 import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomViewCreator;
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.OnClicked;
+import com.idealista.android.view.mvp.view.OnClicked;
 
 public class Adapter<VItemModel> extends RecyclerView.Adapter<Adapter.Holder> {
 

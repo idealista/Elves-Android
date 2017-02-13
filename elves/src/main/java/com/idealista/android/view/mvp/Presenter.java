@@ -1,4 +1,4 @@
-package com.idealista.android.elvesandroid.navigator.view.mvp;
+package com.idealista.android.view.mvp;
 
 import com.idealista.android.usecase.Command;
 
