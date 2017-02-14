@@ -35,3 +35,5 @@ dependencies {
     })
 
 }
+
+apply from: './elves-android-gradle-mvn-push.gradle'
