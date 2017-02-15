@@ -1,10 +1,10 @@
 package com.idealista.android.sample.app.common.presenter;
 
 
-import com.idealista.android.elves.navigator.view.mvp.presenter.PresenterFactory;
-import com.idealista.android.elves.navigator.view.mvp.presenter.EmptyPresenter;
-import com.idealista.android.elves.navigator.view.mvp.presenter.Presenter;
-import com.idealista.android.elves.navigator.view.mvp.view.View;
+import com.idealista.android.elves.view.mvp.presenter.PresenterFactory;
+import com.idealista.android.elves.view.mvp.presenter.EmptyPresenter;
+import com.idealista.android.elves.view.mvp.presenter.Presenter;
+import com.idealista.android.elves.view.mvp.view.View;
 import com.idealista.android.sample.app.movie.presenter.MoviePresenter;
 import com.idealista.android.sample.app.movie.view.MovieView;
 import com.idealista.android.sample.app.movies.presenter.MoviesPresenter;

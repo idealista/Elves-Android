@@ -9,8 +9,8 @@ import android.util.AttributeSet;
 import android.view.View;
 import android.widget.TextView;
 
-import com.idealista.android.elves.navigator.view.widget.LinearView;
-import com.idealista.android.elves.navigator.view.widget.OnClicked;
+import com.idealista.android.elves.view.widget.LinearView;
+import com.idealista.android.elves.view.widget.OnClicked;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.model.MovieModel;
 

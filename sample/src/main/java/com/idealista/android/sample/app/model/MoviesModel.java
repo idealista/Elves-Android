@@ -1,12 +1,12 @@
 package com.idealista.android.sample.app.model;
 
 
-import com.idealista.android.elves.business.Listable;
+import com.idealista.android.elves.model.ListableModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesModel implements Listable<MovieModel> {
+public class MoviesModel implements ListableModel<MovieModel> {
 
     private List<MovieModel> list;
 

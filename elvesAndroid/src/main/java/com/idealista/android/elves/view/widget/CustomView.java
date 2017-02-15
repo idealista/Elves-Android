@@ -1,4 +1,4 @@
-package com.idealista.android.elves.navigator.view.widget;
+package com.idealista.android.elves.view.widget;
 
 public interface CustomView<TViewModel> {
 

@@ -1,7 +1,7 @@
 package com.idealista.android.sample.app.movies.presenter.command;
 
 
-import com.idealista.android.elves.navigator.view.mvp.presenter.Presenter;
+import com.idealista.android.elves.view.mvp.presenter.Presenter;
 import com.idealista.android.sample.app.movies.presenter.command.usecase.GetTitlesUseCase;
 import com.idealista.android.sample.app.movies.view.MoviesView;
 import com.idealista.android.sample.app.model.MovieModel;
@@ -18,7 +18,6 @@ public class GetTitleCommand extends Command<MoviesView> implements UiCommand<Li
     public GetTitleCommand(MoviesView view, Presenter presenter) {
         super(view);
         useCase = new GetTitlesUseCase();
-        presenter.addCommand(this);
     }
 
     public void execute() {

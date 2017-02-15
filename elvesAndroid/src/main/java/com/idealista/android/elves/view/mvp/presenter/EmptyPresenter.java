@@ -1,7 +1,7 @@
-package com.idealista.android.elves.navigator.view.mvp.presenter;
+package com.idealista.android.elves.view.mvp.presenter;
 
 
-import com.idealista.android.elves.navigator.view.mvp.view.View;
+import com.idealista.android.elves.view.mvp.view.View;
 
 public class EmptyPresenter extends Presenter<View> {
 

@@ -1,4 +1,4 @@
-package com.idealista.android.elves.navigator.navigator;
+package com.idealista.android.elves.navigator;
 
 import android.app.Activity;
 import android.content.Intent;
