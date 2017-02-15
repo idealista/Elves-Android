@@ -1,7 +1,7 @@
 package com.idealista.android.sample.app.movies.presenter.command.usecase;
 
 import com.idealista.android.sample.app.model.MoviesModel;
-import com.idealista.android.usecase.UseCase;
+import com.idealista.android.elves.usecase.UseCase;
 
 import java.util.ArrayList;
 import java.util.List;

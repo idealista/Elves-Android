@@ -9,6 +9,16 @@
  */
 package com.idealista.android.tasks;
 
+import com.idealista.android.elves.tasks.AggregateException;
+import com.idealista.android.elves.tasks.CancellationToken;
+import com.idealista.android.elves.tasks.CancellationTokenSource;
+import com.idealista.android.elves.tasks.Capture;
+import com.idealista.android.elves.tasks.Continuation;
+import com.idealista.android.elves.tasks.ExecutorException;
+import com.idealista.android.elves.tasks.Task;
+import com.idealista.android.elves.tasks.TaskCompletionSource;
+import com.idealista.android.elves.tasks.UnobservedTaskException;
+
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -34,9 +44,9 @@ public class TaskTest {
   @Rule
   public ExpectedException thrown = ExpectedException.none();
 
-  private void runTaskTest(Callable<com.idealista.android.tasks.Task<?>> callable) {
+  private void runTaskTest(Callable<Task<?>> callable) {
     try {
-      com.idealista.android.tasks.Task<?> task = callable.call();
+      Task<?> task = callable.call();
       task.waitForCompletion();
       if (task.isFaulted()) {
         Exception error = task.getError();
@@ -54,22 +64,22 @@ public class TaskTest {
 
   @Test
   public void testCache() {
-    assertSame(com.idealista.android.tasks.Task.forResult(null), com.idealista.android.tasks.Task.forResult(null));
-    com.idealista.android.tasks.Task<Boolean> trueTask = com.idealista.android.tasks.Task.forResult(true);
+    assertSame(Task.forResult(null), Task.forResult(null));
+    Task<Boolean> trueTask = Task.forResult(true);
     assertTrue(trueTask.getResult());
-    assertSame(trueTask, com.idealista.android.tasks.Task.forResult(true));
-    com.idealista.android.tasks.Task<Boolean> falseTask = com.idealista.android.tasks.Task.forResult(false);
+    assertSame(trueTask, Task.forResult(true));
+    Task<Boolean> falseTask = Task.forResult(false);
     assertFalse(falseTask.getResult());
-    assertSame(falseTask, com.idealista.android.tasks.Task.forResult(false));
-    assertSame(com.idealista.android.tasks.Task.cancelled(), com.idealista.android.tasks.Task.cancelled());
+    assertSame(falseTask, Task.forResult(false));
+    assertSame(Task.cancelled(), Task.cancelled());
   }
 
   @SuppressWarnings("ThrowableResultOfMethodCallIgnored")
   @Test
   public void testPrimitives() {
-    com.idealista.android.tasks.Task<Integer> complete = com.idealista.android.tasks.Task.forResult(5);
-    com.idealista.android.tasks.Task<Integer> error = com.idealista.android.tasks.Task.forError(new RuntimeException());
-    com.idealista.android.tasks.Task<Integer> cancelled = com.idealista.android.tasks.Task.cancelled();
+    Task<Integer> complete = Task.forResult(5);
+    Task<Integer> error = Task.forError(new RuntimeException());
+    Task<Integer> cancelled = Task.cancelled();
 
     assertTrue(complete.isCompleted());
     assertEquals(5, complete.getResult().intValue());
@@ -88,7 +98,7 @@ public class TaskTest {
 
   @Test
   public void testDelay() throws InterruptedException {
-    final com.idealista.android.tasks.Task<Void> delayed = com.idealista.android.tasks.Task.delay(200);
+    final Task<Void> delayed = Task.delay(200);
     Thread.sleep(50);
     assertFalse(delayed.isCompleted());
     Thread.sleep(200);
@@ -99,16 +109,16 @@ public class TaskTest {
 
   @Test
   public void testDelayWithCancelledToken() throws InterruptedException {
-    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    CancellationTokenSource cts = new CancellationTokenSource();
     cts.cancel();
-    final com.idealista.android.tasks.Task<Void> delayed = com.idealista.android.tasks.Task.delay(200, cts.getToken());
+    final Task<Void> delayed = Task.delay(200, cts.getToken());
     assertTrue(delayed.isCancelled());
   }
 
   @Test
   public void testDelayWithToken() throws InterruptedException {
-    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
-    final com.idealista.android.tasks.Task<Void> delayed = com.idealista.android.tasks.Task.delay(200, cts.getToken());
+    CancellationTokenSource cts = new CancellationTokenSource();
+    final Task<Void> delayed = Task.delay(200, cts.getToken());
     assertFalse(delayed.isCancelled());
     cts.cancel();
     assertTrue(delayed.isCancelled());
@@ -116,12 +126,12 @@ public class TaskTest {
 
   @Test
   public void testSynchronousContinuation() {
-    final com.idealista.android.tasks.Task<Integer> complete = com.idealista.android.tasks.Task.forResult(5);
-    final com.idealista.android.tasks.Task<Integer> error = com.idealista.android.tasks.Task.forError(new RuntimeException());
-    final com.idealista.android.tasks.Task<Integer> cancelled = com.idealista.android.tasks.Task.cancelled();
+    final Task<Integer> complete = Task.forResult(5);
+    final Task<Integer> error = Task.forError(new RuntimeException());
+    final Task<Integer> cancelled = Task.cancelled();
 
-    complete.continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-      public Void then(com.idealista.android.tasks.Task<Integer> task) {
+    complete.continueWith(new Continuation<Integer, Void>() {
+      public Void then(Task<Integer> task) {
         assertEquals(complete, task);
         assertTrue(task.isCompleted());
         assertEquals(5, task.getResult().intValue());
@@ -131,8 +141,8 @@ public class TaskTest {
       }
     });
 
-    error.continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-      public Void then(com.idealista.android.tasks.Task<Integer> task) {
+    error.continueWith(new Continuation<Integer, Void>() {
+      public Void then(Task<Integer> task) {
         assertEquals(error, task);
         assertTrue(task.isCompleted());
         assertTrue(task.getError() instanceof RuntimeException);
@@ -142,8 +152,8 @@ public class TaskTest {
       }
     });
 
-    cancelled.continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-      public Void then(com.idealista.android.tasks.Task<Integer> task) {
+    cancelled.continueWith(new Continuation<Integer, Void>() {
+      public Void then(Task<Integer> task) {
         assertEquals(cancelled, task);
         assertTrue(cancelled.isCompleted());
         assertFalse(cancelled.isFaulted());
@@ -155,15 +165,15 @@ public class TaskTest {
 
   @Test
   public void testSynchronousChaining() {
-    com.idealista.android.tasks.Task<Integer> first = com.idealista.android.tasks.Task.forResult(1);
-    com.idealista.android.tasks.Task<Integer> second = first.continueWith(new com.idealista.android.tasks.Continuation<Integer, Integer>() {
-      public Integer then(com.idealista.android.tasks.Task<Integer> task) {
+    Task<Integer> first = Task.forResult(1);
+    Task<Integer> second = first.continueWith(new Continuation<Integer, Integer>() {
+      public Integer then(Task<Integer> task) {
         return 2;
       }
     });
-    com.idealista.android.tasks.Task<Integer> third = second.continueWithTask(new com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>>() {
-      public com.idealista.android.tasks.Task<Integer> then(com.idealista.android.tasks.Task<Integer> task) {
-        return com.idealista.android.tasks.Task.forResult(3);
+    Task<Integer> third = second.continueWithTask(new Continuation<Integer, Task<Integer>>() {
+      public Task<Integer> then(Task<Integer> task) {
+        return Task.forResult(3);
       }
     });
     assertTrue(first.isCompleted());
@@ -176,9 +186,9 @@ public class TaskTest {
 
   @Test
   public void testSynchronousCancellation() {
-    com.idealista.android.tasks.Task<Integer> first = com.idealista.android.tasks.Task.forResult(1);
-    com.idealista.android.tasks.Task<Integer> second = first.continueWith(new com.idealista.android.tasks.Continuation<Integer, Integer>() {
-      public Integer then(com.idealista.android.tasks.Task<Integer> task) {
+    Task<Integer> first = Task.forResult(1);
+    Task<Integer> second = first.continueWith(new Continuation<Integer, Integer>() {
+      public Integer then(Task<Integer> task) {
         throw new CancellationException();
       }
     });
@@ -188,12 +198,12 @@ public class TaskTest {
 
   @Test
   public void testSynchronousContinuationTokenAlreadyCancelled() {
-    com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
-    final com.idealista.android.tasks.Capture<Boolean> continuationRun = new com.idealista.android.tasks.Capture<>(false);
+    CancellationTokenSource cts = new CancellationTokenSource();
+    final Capture<Boolean> continuationRun = new Capture<>(false);
     cts.cancel();
-    com.idealista.android.tasks.Task<Integer> first = com.idealista.android.tasks.Task.forResult(1);
-    com.idealista.android.tasks.Task<Integer> second = first.continueWith(new com.idealista.android.tasks.Continuation<Integer, Integer>() {
-      public Integer then(com.idealista.android.tasks.Task<Integer> task) {
+    Task<Integer> first = Task.forResult(1);
+    Task<Integer> second = first.continueWith(new Continuation<Integer, Integer>() {
+      public Integer then(Task<Integer> task) {
         continuationRun.set(true);
         return 2;
       }
@@ -205,9 +215,9 @@ public class TaskTest {
 
   @Test
   public void testSynchronousTaskCancellation() {
-    com.idealista.android.tasks.Task<Integer> first = com.idealista.android.tasks.Task.forResult(1);
-    com.idealista.android.tasks.Task<Integer> second = first.continueWithTask(new com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>>() {
-      public com.idealista.android.tasks.Task<Integer> then(com.idealista.android.tasks.Task<Integer> task) {
+    Task<Integer> first = Task.forResult(1);
+    Task<Integer> second = first.continueWithTask(new Continuation<Integer, Task<Integer>>() {
+      public Task<Integer> then(Task<Integer> task) {
         throw new CancellationException();
       }
     });
@@ -217,15 +227,15 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCall() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.callInBackground(new Callable<Integer>() {
           public Integer call() throws Exception {
             Thread.sleep(100);
             return 5;
           }
-        }).continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Integer> task) {
+        }).continueWith(new Continuation<Integer, Void>() {
+          public Void then(Task<Integer> task) {
             assertEquals(5, task.getResult().intValue());
             return null;
           }
@@ -236,12 +246,12 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCallTokenCancellation() {
-    final com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
-    final com.idealista.android.tasks.CancellationToken ct = cts.getToken();
-    final com.idealista.android.tasks.Capture<Boolean> waitingToBeCancelled = new Capture<>(false);
+    final CancellationTokenSource cts = new CancellationTokenSource();
+    final CancellationToken ct = cts.getToken();
+    final Capture<Boolean> waitingToBeCancelled = new Capture<>(false);
     final Object cancelLock = new Object();
 
-    com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
       @Override
       public Integer call() throws Exception {
         synchronized (cancelLock) {
@@ -279,18 +289,18 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCallTokenAlreadyCancelled() {
-    final com.idealista.android.tasks.CancellationTokenSource cts = new com.idealista.android.tasks.CancellationTokenSource();
+    final CancellationTokenSource cts = new CancellationTokenSource();
 
     cts.cancel();
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.callInBackground(new Callable<Integer>() {
           public Integer call() throws Exception {
             Thread.sleep(100);
             return 5;
           }
-        }, cts.getToken()).continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Integer> task) {
+        }, cts.getToken()).continueWith(new Continuation<Integer, Void>() {
+          public Void then(Task<Integer> task) {
             assertTrue(task.isCancelled());
             return null;
           }
@@ -301,7 +311,7 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCallWaiting() throws Exception {
-    com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
       public Integer call() throws Exception {
         Thread.sleep(100);
         return 5;
@@ -316,7 +326,7 @@ public class TaskTest {
   public void testBackgroundCallWaitingWithTimeouts() throws Exception {
     final Object sync = new Object();
 
-    com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
       public Integer call() throws Exception {
         synchronized (sync) {
           sync.wait();
@@ -339,7 +349,7 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCallWaitingOnError() throws Exception {
-    com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
       public Integer call() throws Exception {
         Thread.sleep(100);
         throw new RuntimeException();
@@ -352,15 +362,15 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCallWaitOnCancellation() throws Exception {
-    com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
       public Integer call() throws Exception {
         Thread.sleep(100);
         return 5;
       }
-    }).continueWithTask(new com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>>() {
+    }).continueWithTask(new Continuation<Integer, Task<Integer>>() {
 
-      public com.idealista.android.tasks.Task<Integer> then(com.idealista.android.tasks.Task<Integer> task) {
-        return com.idealista.android.tasks.Task.cancelled();
+      public Task<Integer> then(Task<Integer> task) {
+        return Task.cancelled();
       }
     });
     task.waitForCompletion();
@@ -370,14 +380,14 @@ public class TaskTest {
 
   @Test
   public void testBackgroundError() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.callInBackground(new Callable<Integer>() {
           public Integer call() throws Exception {
             throw new IllegalStateException();
           }
-        }).continueWith(new com.idealista.android.tasks.Continuation<Integer, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Integer> task) {
+        }).continueWith(new Continuation<Integer, Void>() {
+          public Void then(Task<Integer> task) {
             assertTrue(task.isFaulted());
             assertTrue(task.getError() instanceof IllegalStateException);
             return null;
@@ -389,14 +399,14 @@ public class TaskTest {
 
   @Test
   public void testBackgroundCancellation() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.callInBackground(new Callable<Void>() {
           public Void call() throws Exception {
             throw new CancellationException();
           }
-        }).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+        }).continueWith(new Continuation<Void, Void>() {
+          public Void then(Task<Void> task) {
             assertTrue(task.isCancelled());
             return null;
           }
@@ -409,9 +419,9 @@ public class TaskTest {
   public void testUnobservedError() throws InterruptedException {
     try {
       final Object sync = new Object();
-      com.idealista.android.tasks.Task.setUnobservedExceptionHandler(new com.idealista.android.tasks.Task.UnobservedExceptionHandler() {
+      Task.setUnobservedExceptionHandler(new Task.UnobservedExceptionHandler() {
         @Override
-        public void unobservedException(com.idealista.android.tasks.Task<?> t, UnobservedTaskException e) {
+        public void unobservedException(Task<?> t, UnobservedTaskException e) {
           synchronized (sync) {
             sync.notify();
           }
@@ -425,13 +435,13 @@ public class TaskTest {
       }
 
     } finally {
-      com.idealista.android.tasks.Task.setUnobservedExceptionHandler(null);
+      Task.setUnobservedExceptionHandler(null);
     }
   }
 
   // runs in a separate method to ensure it is out of scope.
   private void startFailedTask() throws InterruptedException {
-    com.idealista.android.tasks.Task.call(new Callable<Object>() {
+    Task.call(new Callable<Object>() {
       @Override
       public Object call() throws Exception {
         throw new RuntimeException();
@@ -441,7 +451,7 @@ public class TaskTest {
 
   @Test
   public void testWhenAllNoTasks() {
-    com.idealista.android.tasks.Task<Void> task = com.idealista.android.tasks.Task.whenAll(new ArrayList<com.idealista.android.tasks.Task<Void>>());
+    Task<Void> task = Task.whenAll(new ArrayList<Task<Void>>());
 
     assertTrue(task.isCompleted());
     assertFalse(task.isCancelled());
@@ -450,11 +460,11 @@ public class TaskTest {
     
   @Test
   public void testWhenAnyResultFirstSuccess() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Integer>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<Integer> firstToCompleteSuccess = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Integer>> tasks = new ArrayList<>();
+        final Task<Integer> firstToCompleteSuccess = Task.callInBackground(new Callable<Integer>() {
           @Override
           public Integer call() throws Exception {
             Thread.sleep(50);
@@ -464,9 +474,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteSuccess);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAnyResult(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<Integer>, Void>() {
+        return Task.whenAnyResult(tasks).continueWith(new Continuation<Task<Integer>, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<Integer>> task) throws Exception {
+          public Void then(Task<Task<Integer>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -484,11 +494,11 @@ public class TaskTest {
     
   @Test
   public void testWhenAnyFirstSuccess() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<?>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<String> firstToCompleteSuccess = com.idealista.android.tasks.Task.callInBackground(new Callable<String>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<?>> tasks = new ArrayList<>();
+        final Task<String> firstToCompleteSuccess = Task.callInBackground(new Callable<String>() {
           @Override
           public String call() throws Exception {
             Thread.sleep(50);
@@ -498,9 +508,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteSuccess);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAny(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<?>, Object>() {
+        return Task.whenAny(tasks).continueWith(new Continuation<Task<?>, Object>() {
           @Override
-          public Object then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<?>> task) throws Exception {
+          public Object then(Task<Task<?>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -519,11 +529,11 @@ public class TaskTest {
   @Test
   public void testWhenAnyResultFirstError() {
     final Exception error = new RuntimeException("This task failed.");
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Integer>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<Integer> firstToCompleteError = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Integer>> tasks = new ArrayList<>();
+        final Task<Integer> firstToCompleteError = Task.callInBackground(new Callable<Integer>() {
           @Override
           public Integer call() throws Exception {
             Thread.sleep(50);
@@ -533,9 +543,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteError);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAnyResult(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<Integer>, Object>() {
+        return Task.whenAnyResult(tasks).continueWith(new Continuation<Task<Integer>, Object>() {
           @Override
-          public Object then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<Integer>> task) throws Exception {
+          public Object then(Task<Task<Integer>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -554,11 +564,11 @@ public class TaskTest {
   @Test
   public void testWhenAnyFirstError() {
     final Exception error = new RuntimeException("This task failed.");
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<?>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<String> firstToCompleteError = com.idealista.android.tasks.Task.callInBackground(new Callable<String>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<?>> tasks = new ArrayList<>();
+        final Task<String> firstToCompleteError = Task.callInBackground(new Callable<String>() {
           @Override
           public String call() throws Exception {
             Thread.sleep(50);
@@ -568,9 +578,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteError);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAny(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<?>, Object>() {
+        return Task.whenAny(tasks).continueWith(new Continuation<Task<?>, Object>() {
           @Override
-          public Object then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<?>> task) throws Exception {
+          public Object then(Task<Task<?>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -588,11 +598,11 @@ public class TaskTest {
 
   @Test
   public void testWhenAnyResultFirstCancelled() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Integer>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<Integer> firstToCompleteCancelled = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Integer>> tasks = new ArrayList<>();
+        final Task<Integer> firstToCompleteCancelled = Task.callInBackground(new Callable<Integer>() {
           @Override
           public Integer call() throws Exception {
             Thread.sleep(50);
@@ -603,9 +613,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteCancelled);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAnyResult(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<Integer>, Object>() {
+        return Task.whenAnyResult(tasks).continueWith(new Continuation<Task<Integer>, Object>() {
           @Override
-          public Object then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<Integer>> task) throws Exception {
+          public Object then(Task<Task<Integer>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -622,11 +632,11 @@ public class TaskTest {
     
   @Test
   public void testWhenAnyFirstCancelled() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<?>> tasks = new ArrayList<>();
-        final com.idealista.android.tasks.Task<String> firstToCompleteCancelled = com.idealista.android.tasks.Task.callInBackground(new Callable<String>() {
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<?>> tasks = new ArrayList<>();
+        final Task<String> firstToCompleteCancelled = Task.callInBackground(new Callable<String>() {
           @Override
           public String call() throws Exception {
             Thread.sleep(50);
@@ -636,9 +646,9 @@ public class TaskTest {
         tasks.addAll(launchTasksWithRandomCompletions(5));
         tasks.add(firstToCompleteCancelled);
         tasks.addAll(launchTasksWithRandomCompletions(5));
-        return com.idealista.android.tasks.Task.whenAny(tasks).continueWith(new com.idealista.android.tasks.Continuation<com.idealista.android.tasks.Task<?>, Object>() {
+        return Task.whenAny(tasks).continueWith(new Continuation<Task<?>, Object>() {
           @Override
-          public Object then(com.idealista.android.tasks.Task<com.idealista.android.tasks.Task<?>> task) throws Exception {
+          public Object then(Task<Task<?>> task) throws Exception {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -662,10 +672,10 @@ public class TaskTest {
    * @param numberOfTasksToLaunch The number of tasks to launch
    * @return A collection containing all the tasks that have been launched
    */
-  private Collection<com.idealista.android.tasks.Task<Integer>> launchTasksWithRandomCompletions(int numberOfTasksToLaunch ) {
-    final ArrayList<com.idealista.android.tasks.Task<Integer>> tasks = new ArrayList<>();
+  private Collection<Task<Integer>> launchTasksWithRandomCompletions(int numberOfTasksToLaunch ) {
+    final ArrayList<Task<Integer>> tasks = new ArrayList<>();
     for (int i=0; i < numberOfTasksToLaunch; i++) {
-      com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+      Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
         @Override
         public Integer call() throws Exception {
           Thread.sleep((long) (500 + (Math.random() * 100)));
@@ -685,12 +695,12 @@ public class TaskTest {
 
   @Test
   public void testWhenAllSuccess() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Void>> tasks = new ArrayList<>();
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-          com.idealista.android.tasks.Task<Void> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+          Task<Void> task = Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
               Thread.sleep((long) (Math.random() * 100));
@@ -699,14 +709,14 @@ public class TaskTest {
           });
           tasks.add(task);
         }
-        return com.idealista.android.tasks.Task.whenAll(tasks).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
+        return Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+          public Void then(Task<Void> task) {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
 
-            for (com.idealista.android.tasks.Task<Void> t : tasks) {
+            for (Task<Void> t : tasks) {
               assertTrue(t.isCompleted());
             }
             return null;
@@ -720,13 +730,13 @@ public class TaskTest {
   public void testWhenAllOneError() {
     final Exception error = new RuntimeException("This task failed.");
 
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Void>> tasks = new ArrayList<>();
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
           final int number = i;
-          com.idealista.android.tasks.Task<Void> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+          Task<Void> task = Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
               Thread.sleep((long) (Math.random() * 100));
@@ -738,9 +748,9 @@ public class TaskTest {
           });
           tasks.add(task);
         }
-        return com.idealista.android.tasks.Task.whenAll(tasks).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
+        return Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+          public Void then(Task<Void> task) {
             assertTrue(task.isCompleted());
             assertTrue(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -748,7 +758,7 @@ public class TaskTest {
             assertFalse(task.getError() instanceof AggregateException);
             assertEquals(error, task.getError());
 
-            for (com.idealista.android.tasks.Task<Void> t : tasks) {
+            for (Task<Void> t : tasks) {
               assertTrue(t.isCompleted());
             }
             return null;
@@ -763,13 +773,13 @@ public class TaskTest {
     final Exception error0 = new RuntimeException("This task failed (0).");
     final Exception error1 = new RuntimeException("This task failed (1).");
 
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Void>> tasks = new ArrayList<>();
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
           final int number = i;
-          com.idealista.android.tasks.Task<Void> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+          Task<Void> task = Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
               Thread.sleep((long) (number * 10));
@@ -783,9 +793,9 @@ public class TaskTest {
           });
           tasks.add(task);
         }
-        return com.idealista.android.tasks.Task.whenAll(tasks).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
+        return Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+          public Void then(Task<Void> task) {
             assertTrue(task.isCompleted());
             assertTrue(task.isFaulted());
             assertFalse(task.isCancelled());
@@ -796,7 +806,7 @@ public class TaskTest {
             assertEquals(error1, ((AggregateException) task.getError()).getInnerThrowables().get(1));
             assertEquals(error0, task.getError().getCause());
 
-            for (com.idealista.android.tasks.Task<Void> t : tasks) {
+            for (Task<Void> t : tasks) {
               assertTrue(t.isCompleted());
             }
             return null;
@@ -808,15 +818,15 @@ public class TaskTest {
 
   @Test
   public void testWhenAllCancel() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final ArrayList<com.idealista.android.tasks.Task<Void>> tasks = new ArrayList<>();
+      public Task<?> call() throws Exception {
+        final ArrayList<Task<Void>> tasks = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
-          final com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
+          final TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
 
           final int number = i;
-          com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+          Task.callInBackground(new Callable<Void>() {
             @Override
             public Void call() throws Exception {
               Thread.sleep((long) (Math.random() * 100));
@@ -831,14 +841,14 @@ public class TaskTest {
 
           tasks.add(tcs.getTask());
         }
-        return com.idealista.android.tasks.Task.whenAll(tasks).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
+        return Task.whenAll(tasks).continueWith(new Continuation<Void, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+          public Void then(Task<Void> task) {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertTrue(task.isCancelled());
 
-            for (com.idealista.android.tasks.Task<Void> t : tasks) {
+            for (Task<Void> t : tasks) {
               assertTrue(t.isCompleted());
             }
             return null;
@@ -850,7 +860,7 @@ public class TaskTest {
 
   @Test
   public void testWhenAllResultNoTasks() {
-    com.idealista.android.tasks.Task<List<Void>> task = com.idealista.android.tasks.Task.whenAllResult(new ArrayList<com.idealista.android.tasks.Task<Void>>());
+    Task<List<Void>> task = Task.whenAllResult(new ArrayList<Task<Void>>());
 
     assertTrue(task.isCompleted());
     assertFalse(task.isCancelled());
@@ -860,13 +870,13 @@ public class TaskTest {
 
   @Test
   public void testWhenAllResultSuccess() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
+    runTaskTest(new Callable<Task<?>>() {
       @Override
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        final List<com.idealista.android.tasks.Task<Integer>> tasks = new ArrayList<>();
+      public Task<?> call() throws Exception {
+        final List<Task<Integer>> tasks = new ArrayList<>();
         for (int i = 0; i < 20; i++) {
           final int number = (i + 1);
-          com.idealista.android.tasks.Task<Integer> task = com.idealista.android.tasks.Task.callInBackground(new Callable<Integer>() {
+          Task<Integer> task = Task.callInBackground(new Callable<Integer>() {
             @Override
             public Integer call() throws Exception {
               Thread.sleep((long) (Math.random() * 100));
@@ -875,16 +885,16 @@ public class TaskTest {
           });
           tasks.add(task);
         }
-        return com.idealista.android.tasks.Task.whenAllResult(tasks).continueWith(new com.idealista.android.tasks.Continuation<List<Integer>, Void>() {
+        return Task.whenAllResult(tasks).continueWith(new Continuation<List<Integer>, Void>() {
           @Override
-          public Void then(com.idealista.android.tasks.Task<List<Integer>> task) {
+          public Void then(Task<List<Integer>> task) {
             assertTrue(task.isCompleted());
             assertFalse(task.isFaulted());
             assertFalse(task.isCancelled());
             assertEquals(tasks.size(), task.getResult().size());
 
             for (int i = 0; i < tasks.size(); i++) {
-              com.idealista.android.tasks.Task<Integer> t = tasks.get(i);
+              Task<Integer> t = tasks.get(i);
               assertTrue(t.isCompleted());
               assertEquals(t.getResult(), task.getResult().get(i));
             }
@@ -898,15 +908,15 @@ public class TaskTest {
 
   @Test
   public void testAsyncChaining() {
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
         final ArrayList<Integer> sequence = new ArrayList<>();
-        com.idealista.android.tasks.Task<Void> result = com.idealista.android.tasks.Task.forResult(null);
+        Task<Void> result = Task.forResult(null);
         for (int i = 0; i < 20; i++) {
           final int taskNumber = i;
-          result = result.continueWithTask(new com.idealista.android.tasks.Continuation<Void, com.idealista.android.tasks.Task<Void>>() {
-            public com.idealista.android.tasks.Task<Void> then(com.idealista.android.tasks.Task<Void> task) {
-              return com.idealista.android.tasks.Task.callInBackground(new Callable<Void>() {
+          result = result.continueWithTask(new Continuation<Void, Task<Void>>() {
+            public Task<Void> then(Task<Void> task) {
+              return Task.callInBackground(new Callable<Void>() {
                 public Void call() throws Exception {
                   sequence.add(taskNumber);
                   return null;
@@ -915,8 +925,8 @@ public class TaskTest {
             }
           });
         }
-        result = result.continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Void> task) {
+        result = result.continueWith(new Continuation<Void, Void>() {
+          public Void then(Task<Void> task) {
             assertEquals(20, sequence.size());
             for (int i = 0; i < 20; i++) {
               assertEquals(i, sequence.get(i).intValue());
@@ -931,15 +941,15 @@ public class TaskTest {
 
   @Test
   public void testOnSuccess() {
-    com.idealista.android.tasks.Continuation<Integer, Integer> continuation = new com.idealista.android.tasks.Continuation<Integer, Integer>() {
-      public Integer then(com.idealista.android.tasks.Task<Integer> task) {
+    Continuation<Integer, Integer> continuation = new Continuation<Integer, Integer>() {
+      public Integer then(Task<Integer> task) {
         return task.getResult() + 1;
       }
     };
-    com.idealista.android.tasks.Task<Integer> complete = com.idealista.android.tasks.Task.forResult(5).onSuccess(continuation);
-    com.idealista.android.tasks.Task<Integer> error = com.idealista.android.tasks.Task.<Integer> forError(new IllegalStateException()).onSuccess(
+    Task<Integer> complete = Task.forResult(5).onSuccess(continuation);
+    Task<Integer> error = Task.<Integer> forError(new IllegalStateException()).onSuccess(
         continuation);
-    com.idealista.android.tasks.Task<Integer> cancelled = com.idealista.android.tasks.Task.<Integer> cancelled().onSuccess(continuation);
+    Task<Integer> cancelled = Task.<Integer> cancelled().onSuccess(continuation);
 
     assertTrue(complete.isCompleted());
     assertEquals(6, complete.getResult().intValue());
@@ -958,15 +968,15 @@ public class TaskTest {
 
   @Test
   public void testOnSuccessTask() {
-    com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>> continuation = new com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>>() {
-      public com.idealista.android.tasks.Task<Integer> then(com.idealista.android.tasks.Task<Integer> task) {
-        return com.idealista.android.tasks.Task.forResult(task.getResult() + 1);
+    Continuation<Integer, Task<Integer>> continuation = new Continuation<Integer, Task<Integer>>() {
+      public Task<Integer> then(Task<Integer> task) {
+        return Task.forResult(task.getResult() + 1);
       }
     };
-    com.idealista.android.tasks.Task<Integer> complete = com.idealista.android.tasks.Task.forResult(5).onSuccessTask(continuation);
-    com.idealista.android.tasks.Task<Integer> error = com.idealista.android.tasks.Task.<Integer> forError(new IllegalStateException()).onSuccessTask(
+    Task<Integer> complete = Task.forResult(5).onSuccessTask(continuation);
+    Task<Integer> error = Task.<Integer> forError(new IllegalStateException()).onSuccessTask(
         continuation);
-    com.idealista.android.tasks.Task<Integer> cancelled = com.idealista.android.tasks.Task.<Integer> cancelled().onSuccessTask(continuation);
+    Task<Integer> cancelled = Task.<Integer> cancelled().onSuccessTask(continuation);
 
     assertTrue(complete.isCompleted());
     assertEquals(6, complete.getResult().intValue());
@@ -986,19 +996,19 @@ public class TaskTest {
   @Test
   public void testContinueWhile() {
     final AtomicInteger count = new AtomicInteger(0);
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.forResult(null).continueWhile(new Callable<Boolean>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.forResult(null).continueWhile(new Callable<Boolean>() {
           public Boolean call() throws Exception {
             return count.get() < 10;
           }
-        }, new com.idealista.android.tasks.Continuation<Void, com.idealista.android.tasks.Task<Void>>() {
-          public com.idealista.android.tasks.Task<Void> then(com.idealista.android.tasks.Task<Void> task) throws Exception {
+        }, new Continuation<Void, Task<Void>>() {
+          public Task<Void> then(Task<Void> task) throws Exception {
             count.incrementAndGet();
             return null;
           }
-        }).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Void> task) throws Exception {
+        }).continueWith(new Continuation<Void, Void>() {
+          public Void then(Task<Void> task) throws Exception {
             assertEquals(10, count.get());
             return null;
           }
@@ -1010,19 +1020,19 @@ public class TaskTest {
   @Test
   public void testContinueWhileAsync() {
     final AtomicInteger count = new AtomicInteger(0);
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.forResult(null).continueWhile(new Callable<Boolean>() {
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.forResult(null).continueWhile(new Callable<Boolean>() {
           public Boolean call() throws Exception {
             return count.get() < 10;
           }
-        }, new com.idealista.android.tasks.Continuation<Void, com.idealista.android.tasks.Task<Void>>() {
-          public com.idealista.android.tasks.Task<Void> then(com.idealista.android.tasks.Task<Void> task) throws Exception {
+        }, new Continuation<Void, Task<Void>>() {
+          public Task<Void> then(Task<Void> task) throws Exception {
             count.incrementAndGet();
             return null;
           }
-        }, Executors.newCachedThreadPool()).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Void> task) throws Exception {
+        }, Executors.newCachedThreadPool()).continueWith(new Continuation<Void, Void>() {
+          public Void then(Task<Void> task) throws Exception {
             assertEquals(10, count.get());
             return null;
           }
@@ -1034,15 +1044,15 @@ public class TaskTest {
   @Test
   public void testContinueWhileAsyncCancellation() {
     final AtomicInteger count = new AtomicInteger(0);
-    final com.idealista.android.tasks.CancellationTokenSource cts = new CancellationTokenSource();
-    runTaskTest(new Callable<com.idealista.android.tasks.Task<?>>() {
-      public com.idealista.android.tasks.Task<?> call() throws Exception {
-        return com.idealista.android.tasks.Task.forResult(null).continueWhile(new Callable<Boolean>() {
+    final CancellationTokenSource cts = new CancellationTokenSource();
+    runTaskTest(new Callable<Task<?>>() {
+      public Task<?> call() throws Exception {
+        return Task.forResult(null).continueWhile(new Callable<Boolean>() {
                                                     public Boolean call() throws Exception {
                                                       return count.get() < 10;
                                                     }
-                                                  }, new com.idealista.android.tasks.Continuation<Void, com.idealista.android.tasks.Task<Void>>() {
-                                                    public com.idealista.android.tasks.Task<Void> then(com.idealista.android.tasks.Task<Void> task)
+                                                  }, new Continuation<Void, Task<Void>>() {
+                                                    public Task<Void> then(Task<Void> task)
                                                         throws Exception {
                                                       if (count.incrementAndGet() == 5) {
                                                         cts.cancel();
@@ -1050,8 +1060,8 @@ public class TaskTest {
                                                       return null;
                                                     }
                                                   }, Executors.newCachedThreadPool(),
-            cts.getToken()).continueWith(new com.idealista.android.tasks.Continuation<Void, Void>() {
-          public Void then(com.idealista.android.tasks.Task<Void> task) throws Exception {
+            cts.getToken()).continueWith(new Continuation<Void, Void>() {
+          public Void then(Task<Void> task) throws Exception {
             assertTrue(task.isCancelled());
             assertEquals(5, count.get());
             return null;
@@ -1065,7 +1075,7 @@ public class TaskTest {
   public void testCallWithBadExecutor() {
     final RuntimeException exception = new RuntimeException("BAD EXECUTORS");
 
-    com.idealista.android.tasks.Task.call(new Callable<Integer>() {
+    Task.call(new Callable<Integer>() {
       public Integer call() throws Exception {
         return 1;
       }
@@ -1074,11 +1084,11 @@ public class TaskTest {
       public void execute(Runnable command) {
         throw exception;
       }
-    }).continueWith(new com.idealista.android.tasks.Continuation<Integer, Object>() {
+    }).continueWith(new Continuation<Integer, Object>() {
       @Override
-      public Object then(com.idealista.android.tasks.Task<Integer> task) throws Exception {
+      public Object then(Task<Integer> task) throws Exception {
         assertTrue(task.isFaulted());
-        assertTrue(task.getError() instanceof com.idealista.android.tasks.ExecutorException);
+        assertTrue(task.getError() instanceof ExecutorException);
         assertEquals(exception, task.getError().getCause());
 
         return null;
@@ -1090,13 +1100,13 @@ public class TaskTest {
   public void testContinueWithBadExecutor() {
     final RuntimeException exception = new RuntimeException("BAD EXECUTORS");
 
-    com.idealista.android.tasks.Task.call(new Callable<Integer>() {
+    Task.call(new Callable<Integer>() {
       public Integer call() throws Exception {
         return 1;
       }
-    }).continueWith(new com.idealista.android.tasks.Continuation<Integer, Integer>() {
+    }).continueWith(new Continuation<Integer, Integer>() {
       @Override
-      public Integer then(com.idealista.android.tasks.Task<Integer> task) throws Exception {
+      public Integer then(Task<Integer> task) throws Exception {
         return task.getResult();
       }
     }, new Executor() {
@@ -1104,11 +1114,11 @@ public class TaskTest {
       public void execute(Runnable command) {
         throw exception;
       }
-    }).continueWith(new com.idealista.android.tasks.Continuation<Integer, Object>() {
+    }).continueWith(new Continuation<Integer, Object>() {
       @Override
-      public Object then(com.idealista.android.tasks.Task<Integer> task) throws Exception {
+      public Object then(Task<Integer> task) throws Exception {
         assertTrue(task.isFaulted());
-        assertTrue(task.getError() instanceof com.idealista.android.tasks.ExecutorException);
+        assertTrue(task.getError() instanceof ExecutorException);
         assertEquals(exception, task.getError().getCause());
 
         return null;
@@ -1120,13 +1130,13 @@ public class TaskTest {
   public void testContinueWithTaskAndBadExecutor() {
     final RuntimeException exception = new RuntimeException("BAD EXECUTORS");
 
-    com.idealista.android.tasks.Task.call(new Callable<Integer>() {
+    Task.call(new Callable<Integer>() {
       public Integer call() throws Exception {
         return 1;
       }
-    }).continueWithTask(new com.idealista.android.tasks.Continuation<Integer, com.idealista.android.tasks.Task<Integer>>() {
+    }).continueWithTask(new Continuation<Integer, Task<Integer>>() {
       @Override
-      public com.idealista.android.tasks.Task<Integer> then(com.idealista.android.tasks.Task<Integer> task) throws Exception {
+      public Task<Integer> then(Task<Integer> task) throws Exception {
         return task;
       }
     }, new Executor() {
@@ -1136,7 +1146,7 @@ public class TaskTest {
       }
     }).continueWith(new Continuation<Integer, Object>() {
       @Override
-      public Object then(com.idealista.android.tasks.Task<Integer> task) throws Exception {
+      public Object then(Task<Integer> task) throws Exception {
         assertTrue(task.isFaulted());
         assertTrue(task.getError() instanceof ExecutorException);
         assertEquals(exception, task.getError().getCause());
@@ -1150,8 +1160,8 @@ public class TaskTest {
 
   @Test
   public void testTrySetResult() {
-    com.idealista.android.tasks.TaskCompletionSource<String> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
-    com.idealista.android.tasks.Task<String> task = tcs.getTask();
+    TaskCompletionSource<String> tcs = new TaskCompletionSource<>();
+    Task<String> task = tcs.getTask();
     assertFalse(task.isCompleted());
 
     boolean success = tcs.trySetResult("SHOW ME WHAT YOU GOT");
@@ -1162,8 +1172,8 @@ public class TaskTest {
 
   @Test
   public void testTrySetError() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
-    com.idealista.android.tasks.Task<Void> task = tcs.getTask();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+    Task<Void> task = tcs.getTask();
     assertFalse(task.isCompleted());
 
     Exception exception = new RuntimeException("DISQUALIFIED");
@@ -1175,8 +1185,8 @@ public class TaskTest {
 
   @Test
   public void testTrySetCanceled() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
-    com.idealista.android.tasks.Task<Void> task = tcs.getTask();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
+    Task<Void> task = tcs.getTask();
     assertFalse(task.isCompleted());
 
     boolean success = tcs.trySetCancelled();
@@ -1187,7 +1197,7 @@ public class TaskTest {
 
   @Test
   public void testTrySetOnCompletedTask() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
     tcs.setResult(null);
 
     assertFalse(tcs.trySetResult(null));
@@ -1197,7 +1207,7 @@ public class TaskTest {
 
   @Test
   public void testSetResultOnCompletedTask() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
     tcs.setResult(null);
 
     thrown.expect(IllegalStateException.class);
@@ -1206,7 +1216,7 @@ public class TaskTest {
 
   @Test
   public void testSetErrorOnCompletedTask() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
     tcs.setResult(null);
 
     thrown.expect(IllegalStateException.class);
@@ -1215,7 +1225,7 @@ public class TaskTest {
 
   @Test
   public void testSetCancelledOnCompletedTask() {
-    com.idealista.android.tasks.TaskCompletionSource<Void> tcs = new com.idealista.android.tasks.TaskCompletionSource<>();
+    TaskCompletionSource<Void> tcs = new TaskCompletionSource<>();
     tcs.setResult(null);
 
     thrown.expect(IllegalStateException.class);

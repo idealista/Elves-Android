@@ -3,7 +3,7 @@ package com.idealista.android.sample.app.movie.presenter.command;
 
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.movie.view.MovieView;
-import com.idealista.android.usecase.Command;
+import com.idealista.android.elves.usecase.Command;
 
 public class SetTitleCommand extends Command<MovieView> {
 

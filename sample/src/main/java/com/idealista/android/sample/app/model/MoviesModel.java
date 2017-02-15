@@ -1,7 +1,7 @@
 package com.idealista.android.sample.app.model;
 
 
-import com.idealista.android.business.Listable;
+import com.idealista.android.elves.business.Listable;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,13 +1,13 @@
 package com.idealista.android.sample.app.movies.presenter.command;
 
 
-import com.idealista.android.view.mvp.Presenter;
+import com.idealista.android.elves.navigator.view.mvp.presenter.Presenter;
 import com.idealista.android.sample.app.movies.presenter.command.usecase.GetTitlesUseCase;
 import com.idealista.android.sample.app.movies.view.MoviesView;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
-import com.idealista.android.usecase.Command;
-import com.idealista.android.usecase.UiCommand;
+import com.idealista.android.elves.usecase.Command;
+import com.idealista.android.elves.usecase.UiCommand;
 
 import java.util.List;
 

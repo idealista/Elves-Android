@@ -3,8 +3,8 @@ package com.idealista.android.sample.app.common.customview;
 
 import android.content.Context;
 
-import com.idealista.android.view.mvp.view.CustomView;
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomViewCreator;
+import com.idealista.android.elves.navigator.view.mvp.view.CustomViewCreator;
+import com.idealista.android.elves.navigator.view.widget.CustomView;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.movies.view.MovieView;
 

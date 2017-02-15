@@ -5,11 +5,11 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
 
-import com.idealista.android.elvesandroid.navigator.navigator.Navigator;
-import com.idealista.android.elvesandroid.navigator.view.Adapter;
-import com.idealista.android.elvesandroid.navigator.view.mvp.Activity;
-import com.idealista.android.elvesandroid.navigator.view.mvp.view.CustomViewCreator;
-import com.idealista.android.view.mvp.view.OnClicked;
+import com.idealista.android.elves.navigator.navigator.Navigator;
+import com.idealista.android.elves.navigator.view.Adapter;
+import com.idealista.android.elves.navigator.view.mvp.view.Activity;
+import com.idealista.android.elves.navigator.view.mvp.view.CustomViewCreator;
+import com.idealista.android.elves.navigator.view.widget.OnClicked;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.common.customview.CustomViewFactory;
 import com.idealista.android.sample.app.common.navigator.DetailNavigator;
