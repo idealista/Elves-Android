@@ -7,20 +7,18 @@ import com.idealista.android.elves.App;
 import com.idealista.android.elves.navigator.Navigator;
 import com.idealista.android.elves.navigator.NavigatorFactory;
 import com.idealista.android.elves.view.mvp.presenter.Presenter;
-import com.idealista.android.elves.view.mvp.presenter.PresenterFactory;
 
-public abstract class Activity<P extends Presenter> extends AppCompatActivity implements View {
+public abstract class Activity<P extends Presenter, ViewModel> extends AppCompatActivity implements View {
 
     protected P presenter;
-    protected NavigatorFactory navigatorFactory;
+    protected NavigatorFactory<ViewModel> navigatorFactory;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getLayoutId());
         navigatorFactory = App.getNavigatorFactory();
-        PresenterFactory presenterFactory = App.getPresenterFactory();
-        presenter = (P) presenterFactory.getPresenter(this);
+        presenter = getPresenter();
         prepare();
     }
 
@@ -36,11 +34,14 @@ public abstract class Activity<P extends Presenter> extends AppCompatActivity im
         presenter.stop();
     }
 
-    protected Navigator getNavigator(Activity activity, Class clazz) {
+    protected Navigator<ViewModel> getNavigator(Activity activity, Class clazz) {
         return navigatorFactory.getNavigator(activity, clazz);
     }
 
     public abstract int getLayoutId();
 
     public abstract void prepare();
+
+    public abstract P getPresenter();
+
 }

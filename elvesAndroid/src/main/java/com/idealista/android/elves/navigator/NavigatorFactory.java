@@ -5,9 +5,9 @@ import android.app.Activity;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
-public class NavigatorFactory {
+public class NavigatorFactory<ViewModel> {
 
-    public Navigator getNavigator(Activity activity, Class clazz) {
+    public Navigator<ViewModel> getNavigator(Activity activity, Class clazz) {
         try {
             Constructor<?> constructor = clazz.getConstructor(Activity.class);
             return (Navigator) constructor.newInstance(activity);

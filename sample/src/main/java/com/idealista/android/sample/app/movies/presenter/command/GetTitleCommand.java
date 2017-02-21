@@ -1,13 +1,13 @@
 package com.idealista.android.sample.app.movies.presenter.command;
 
 
-import com.idealista.android.elves.view.mvp.presenter.Presenter;
-import com.idealista.android.sample.app.movies.presenter.command.usecase.GetTitlesUseCase;
-import com.idealista.android.sample.app.movies.view.MoviesView;
-import com.idealista.android.sample.app.model.MovieModel;
-import com.idealista.android.sample.app.model.MoviesModel;
 import com.idealista.android.elves.usecase.Command;
 import com.idealista.android.elves.usecase.UiCommand;
+import com.idealista.android.sample.app.model.MovieModel;
+import com.idealista.android.sample.app.model.MoviesModel;
+import com.idealista.android.sample.app.movies.presenter.command.usecase.GetTitlesUseCase;
+import com.idealista.android.sample.app.movies.presenter.command.usecase.MoviesUseCases;
+import com.idealista.android.sample.app.movies.view.MoviesView;
 
 import java.util.List;
 
@@ -15,9 +15,9 @@ public class GetTitleCommand extends Command<MoviesView> implements UiCommand<Li
 
     private final GetTitlesUseCase useCase;
 
-    public GetTitleCommand(MoviesView view, Presenter presenter) {
+    public GetTitleCommand(MoviesView view, MoviesUseCases useCases) {
         super(view);
-        useCase = new GetTitlesUseCase();
+        useCase = useCases.titles();
     }
 
     public void execute() {
@@ -26,7 +26,9 @@ public class GetTitleCommand extends Command<MoviesView> implements UiCommand<Li
 
     @Override
     public void cancel() {
-
+        if (useCase != null) {
+            useCase.cancel();
+        }
     }
 
     @Override

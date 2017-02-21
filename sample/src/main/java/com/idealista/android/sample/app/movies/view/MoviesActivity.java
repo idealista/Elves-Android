@@ -15,9 +15,10 @@ import com.idealista.android.sample.app.common.customview.CustomViewFactory;
 import com.idealista.android.sample.app.common.navigator.DetailNavigator;
 import com.idealista.android.sample.app.model.MovieModel;
 import com.idealista.android.sample.app.model.MoviesModel;
+import com.idealista.android.sample.app.movies.presenter.GetMoviesPresenter;
 import com.idealista.android.sample.app.movies.presenter.MoviesPresenter;
 
-public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesView {
+public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implements MoviesView {
 
     private Adapter<MovieModel> adapter;
 
@@ -68,5 +69,10 @@ public class MoviesActivity extends Activity<MoviesPresenter> implements MoviesV
         CustomViewCreator<MovieModel> customViewCreator = new CustomViewFactory().getMovieViewCreator();
         adapter = new Adapter<>(onClickListener, customViewCreator);
         recyclerView.setAdapter(adapter);
+    }
+
+    @Override
+    public MoviesPresenter getPresenter() {
+        return new GetMoviesPresenter(this).get();
     }
 }

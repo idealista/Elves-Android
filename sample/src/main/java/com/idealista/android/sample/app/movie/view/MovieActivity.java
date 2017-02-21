@@ -7,9 +7,10 @@ import com.idealista.android.elves.view.mvp.view.Activity;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.common.navigator.Extras;
 import com.idealista.android.sample.app.model.MovieModel;
+import com.idealista.android.sample.app.movie.presenter.GetMoviePresenter;
 import com.idealista.android.sample.app.movie.presenter.MoviePresenter;
 
-public class MovieActivity extends Activity<MoviePresenter> implements MovieView {
+public class MovieActivity extends Activity<MoviePresenter, MovieModel> implements MovieView {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,6 +26,11 @@ public class MovieActivity extends Activity<MoviePresenter> implements MovieView
     public void prepare() {
         MovieModel movieModel = getIntent().getParcelableExtra(Extras.MOVIE_EXTRA);
         presenter.setMovie(movieModel);
+    }
+
+    @Override
+    public MoviePresenter getPresenter() {
+        return new GetMoviePresenter(this).get();
     }
 
     @Override

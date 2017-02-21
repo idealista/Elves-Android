@@ -7,24 +7,17 @@ import android.os.Looper;
 import android.support.annotation.NonNull;
 
 import com.idealista.android.elves.navigator.NavigatorFactory;
-import com.idealista.android.elves.view.mvp.presenter.PresenterFactory;
 
 import java.util.concurrent.Executor;
 
 public abstract class App extends Application {
 
-    private static PresenterFactory presenterFactory;
     private static NavigatorFactory navigatorFactory;
 
     @Override
     public void onCreate() {
         super.onCreate();
-        presenterFactory = createPresenterFactory();
         navigatorFactory = new NavigatorFactory();
-    }
-
-    public static PresenterFactory getPresenterFactory() {
-        return presenterFactory;
     }
 
     public static NavigatorFactory getNavigatorFactory() {
@@ -41,7 +34,5 @@ public abstract class App extends Application {
         }
 
     };
-
-    protected abstract PresenterFactory createPresenterFactory();
 
 }
