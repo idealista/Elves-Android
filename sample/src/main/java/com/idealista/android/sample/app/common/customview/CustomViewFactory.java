@@ -2,6 +2,7 @@ package com.idealista.android.sample.app.common.customview;
 
 
 import android.content.Context;
+import android.support.annotation.NonNull;
 
 import com.idealista.android.elves.view.mvp.view.CustomViewCreator;
 import com.idealista.android.elves.view.widget.CustomView;
@@ -13,7 +14,7 @@ public final class CustomViewFactory {
     public CustomViewCreator<MovieModel> getMovieViewCreator() {
         return new CustomViewCreator<MovieModel>() {
             @Override
-            public CustomView<MovieModel> create(Context context) {
+            public CustomView<MovieModel> create(@NonNull Context context) {
                 return new MovieView(context);
             }
         };

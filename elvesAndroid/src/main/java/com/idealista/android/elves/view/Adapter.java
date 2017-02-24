@@ -1,5 +1,6 @@
 package com.idealista.android.elves.view;
 
+import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,18 +17,19 @@ public class Adapter<VItemModel> extends RecyclerView.Adapter<Adapter.Holder> {
     private ListableModel<VItemModel> list;
     private final OnClicked<VItemModel> onClickListener;
 
-    public Adapter(OnClicked<VItemModel> onClickListener, CustomViewCreator<VItemModel> customViewCreator) {
+    public Adapter(@NonNull final OnClicked<VItemModel> onClickListener,
+                   @NonNull final CustomViewCreator<VItemModel> customViewCreator) {
         this.customViewCreator = customViewCreator;
         this.onClickListener = onClickListener;
         this.list = new EmptyListModel<>();
     }
 
-    public void add(ListableModel<VItemModel> listable) {
+    public void add(@NonNull final ListableModel<VItemModel> listable) {
         this.list = listable;
         notifyDataSetChanged();
     }
 
-    public void add(VItemModel movie) {
+    public void add(@NonNull final VItemModel movie) {
         int position = list.add(movie);
         notifyItemInserted(position);
     }

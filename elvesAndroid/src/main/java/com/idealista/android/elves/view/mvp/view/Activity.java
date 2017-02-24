@@ -1,6 +1,7 @@
 package com.idealista.android.elves.view.mvp.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 
 import com.idealista.android.elves.App;
@@ -34,7 +35,7 @@ public abstract class Activity<P extends Presenter, ViewModel> extends AppCompat
         presenter.stop();
     }
 
-    protected Navigator<ViewModel> getNavigator(Activity activity, Class clazz) {
+    protected Navigator<ViewModel> getNavigator(@NonNull final Activity activity, @NonNull final Class clazz) {
         return navigatorFactory.getNavigator(activity, clazz);
     }
 

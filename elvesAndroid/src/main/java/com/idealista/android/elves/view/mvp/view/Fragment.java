@@ -14,7 +14,7 @@ public abstract class Fragment<P extends Presenter> extends android.support.v4.a
     public android.view.View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle
             savedInstanceState) {
         android.view.View view = inflater.inflate(getLayoutId(), container, false);
-        prepare();
+        prepare(view);
         presenter = getPresenter();
         return view;
     }
@@ -33,7 +33,7 @@ public abstract class Fragment<P extends Presenter> extends android.support.v4.a
 
     public abstract int getLayoutId();
 
-    public abstract void prepare();
+    public abstract void prepare(android.view.View view);
 
     public abstract P getPresenter();
 

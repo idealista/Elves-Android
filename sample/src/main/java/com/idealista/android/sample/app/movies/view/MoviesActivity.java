@@ -1,6 +1,7 @@
 package com.idealista.android.sample.app.movies.view;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
@@ -40,7 +41,7 @@ public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implem
     private OnClicked<MovieModel> onClickListener = new OnClicked<MovieModel>() {
 
         @Override
-        public void onClick(MovieModel movieModel) {
+        public void onClick(@NonNull MovieModel movieModel) {
             notifyPresenterMovieClicked(movieModel);
         }
     };

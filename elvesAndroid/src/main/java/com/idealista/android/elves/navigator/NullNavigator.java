@@ -1,20 +1,22 @@
 package com.idealista.android.elves.navigator;
 
+import android.app.Activity;
 import android.content.Intent;
+import android.support.annotation.NonNull;
 
 public class NullNavigator extends Navigator {
 
-    protected NullNavigator() {
-        super(null);
+    NullNavigator(Activity activity) {
+        super(activity);
     }
 
     @Override
-    protected Intent getIntent(Object o) {
-        return null;
+    protected Intent getIntent(@NonNull final Object o) {
+        return new Intent();
     }
 
     @Override
-    public void goTo(Object o) {
+    public void goTo(@NonNull final Object o) {
         // Nothing to do here
     }
 }

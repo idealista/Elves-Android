@@ -1,6 +1,8 @@
 package com.idealista.android.sample.app.model;
 
 
+import android.support.annotation.NonNull;
+
 import com.idealista.android.elves.model.ListableModel;
 
 import java.util.ArrayList;
@@ -15,7 +17,7 @@ public class MoviesModel implements ListableModel<MovieModel> {
     }
 
     @Override
-    public int add(MovieModel movie) {
+    public int add(@NonNull MovieModel movie) {
         list.add(movie);
         return list.indexOf(movie);
     }
@@ -26,7 +28,7 @@ public class MoviesModel implements ListableModel<MovieModel> {
     }
 
     @Override
-    public MovieModel get(int position) {
+    public MovieModel get(@NonNull int position) {
         return list.get(position);
     }
 

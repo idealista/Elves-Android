@@ -17,7 +17,7 @@ public class DetailNavigator extends Navigator<MovieModel> {
 
     @NonNull
     @Override
-    protected Intent getIntent(MovieModel movie) {
+    protected Intent getIntent(@NonNull MovieModel movie) {
         Intent intent = new Intent(activity, MovieActivity.class);
         intent.putExtra(Extras.MOVIE_EXTRA, movie);
         return intent;

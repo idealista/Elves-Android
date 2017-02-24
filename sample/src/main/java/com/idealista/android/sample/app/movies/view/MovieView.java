@@ -3,6 +3,7 @@ package com.idealista.android.sample.app.movies.view;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -49,7 +50,7 @@ public class MovieView extends LinearView<MovieModel> {
     }
 
     @Override
-    public void render(final MovieModel movie) {
+    public void render(@NonNull final MovieModel movie) {
         textViewTitle.setText(movie.getTitle());
         setOnClickListener(getOnClickListener(movie));
     }
@@ -65,7 +66,7 @@ public class MovieView extends LinearView<MovieModel> {
     }
 
     @Override
-    public void setOnClicked(OnClicked<MovieModel> onClicked) {
+    public void setOnClicked(@NonNull OnClicked<MovieModel> onClicked) {
         this.onClicked = onClicked;
     }
 

@@ -1,12 +1,14 @@
 package com.idealista.android.elves.view.widget;
 
+import android.support.annotation.NonNull;
+
 public interface CustomView<TViewModel> {
 
     void prepare();
 
     int getLayoutId();
 
-    void setOnClicked(OnClicked<TViewModel> viewModel);
+    void setOnClicked(@NonNull final OnClicked<TViewModel> onClicked);
 
-    void render(TViewModel viewModel);
+    void render(@NonNull final TViewModel viewModel);
 }

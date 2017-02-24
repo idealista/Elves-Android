@@ -1,11 +1,13 @@
 package com.idealista.android.elves.model;
 
 
+import android.support.annotation.NonNull;
+
 public interface ListableModel<TModel> {
 
-    int add(TModel item);
+    int add(@NonNull final TModel item);
 
     int size();
 
-    TModel get(int position);
+    TModel get(final int position);
 }

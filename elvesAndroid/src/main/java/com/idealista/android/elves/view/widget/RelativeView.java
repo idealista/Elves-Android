@@ -3,6 +3,7 @@ package com.idealista.android.elves.view.widget;
 
 import android.content.Context;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
 import android.util.AttributeSet;
@@ -11,21 +12,21 @@ import android.widget.RelativeLayout;
 
 public abstract class RelativeView<TViewModel> extends RelativeLayout implements CustomView<TViewModel> {
 
-    public RelativeView(Context context) {
+    public RelativeView(@NonNull final Context context) {
         this(context, null);
     }
 
-    public RelativeView(Context context, @Nullable AttributeSet attrs) {
+    public RelativeView(@NonNull final Context context, @Nullable AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public RelativeView(Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
+    public RelativeView(@NonNull final Context context, @Nullable AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         init();
     }
 
     @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
-    public RelativeView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public RelativeView(@NonNull final Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
         super(context, attrs, defStyleAttr, defStyleRes);
         init();
     }
