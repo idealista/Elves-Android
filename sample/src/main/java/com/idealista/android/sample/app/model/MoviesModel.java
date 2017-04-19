@@ -32,4 +32,7 @@ public class MoviesModel implements ListableModel<MovieModel> {
         return list.get(position);
     }
 
+    @Override public boolean isEmpty() {
+        return list.isEmpty();
+    }
 }

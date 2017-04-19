@@ -10,4 +10,7 @@ public interface ListableModel<TModel> {
     int size();
 
     TModel get(final int position);
+
+    boolean isEmpty();
+
 }

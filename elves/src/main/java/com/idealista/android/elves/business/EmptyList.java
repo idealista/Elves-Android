@@ -4,7 +4,7 @@ package com.idealista.android.elves.business;
 public class EmptyList<V> implements Listable<V> {
 
     @Override
-    public int add(V movie) {
+    public int add(V item) {
         return 0;
     }
 
@@ -16,5 +16,9 @@ public class EmptyList<V> implements Listable<V> {
     @Override
     public V get(int position) {
         return null;
+    }
+
+    @Override public boolean isEmpty() {
+        return true;
     }
 }

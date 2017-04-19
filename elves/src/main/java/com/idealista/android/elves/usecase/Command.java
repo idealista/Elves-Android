@@ -10,4 +10,6 @@ public abstract class Command<TView> {
 
     public abstract void cancel();
 
+    public abstract void execute();
+
 }
