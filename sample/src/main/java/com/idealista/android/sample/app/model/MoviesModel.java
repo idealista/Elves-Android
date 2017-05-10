@@ -8,7 +8,7 @@ import com.idealista.android.elves.model.ListableModel;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MoviesModel implements ListableModel<MovieModel> {
+public class MoviesModel extends ListableModel<MovieModel> {
 
     private List<MovieModel> list;
 

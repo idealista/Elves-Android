@@ -1,26 +1,64 @@
 package com.idealista.android.elves.model;
 
-
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Iterator;
+import java.util.List;
 
-public class EmptyListModel<VItemModel> implements ListableModel<VItemModel> {
+public class ListableModel<VItemModel> {
 
-    @Override
+    protected final List<VItemModel> list;
+
+    public ListableModel() {
+        this.list = new ArrayList<>();
+    }
+
+    public ListableModel(List<VItemModel> list) {
+        if (list != null) {
+            this.list = new ArrayList<>(list);
+        } else {
+            this.list = new ArrayList<>();
+        }
+    }
+
     public int add(@NonNull final VItemModel item) {
-        return 0;
+        list.add(item);
+        return list.indexOf(item);
     }
 
-    @Override
     public int size() {
-        return 0;
+        return list.size();
     }
 
-    @Override
     public VItemModel get(final int position) {
-        return null;
+        return list.get(position);
     }
 
-    @Override public boolean isEmpty() {
-        return true;
+    public boolean isEmpty() {
+        return list.isEmpty();
+    }
+
+    public Iterator<VItemModel> iterator() {
+        return list.iterator();
+    }
+
+    @Nullable public VItemModel getFirst() {
+        try {
+            return get(0);
+        } catch (IndexOutOfBoundsException e) {
+            return null;
+        }
+    }
+
+    @Nullable public VItemModel getFirst(Comparator<VItemModel> comparator) {
+        sort(comparator);
+        return getFirst();
+    }
+
+    public void sort(Comparator<VItemModel> comparator) {
+        Collections.sort(list, comparator);
     }
 }
