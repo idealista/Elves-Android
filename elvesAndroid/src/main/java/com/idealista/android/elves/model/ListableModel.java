@@ -3,14 +3,24 @@ package com.idealista.android.elves.model;
 
 import android.support.annotation.NonNull;
 
-public interface ListableModel<TModel> {
+public class EmptyListModel<VItemModel> implements ListableModel<VItemModel> {
 
-    int add(@NonNull final TModel item);
+    @Override
+    public int add(@NonNull final VItemModel item) {
+        return 0;
+    }
 
-    int size();
+    @Override
+    public int size() {
+        return 0;
+    }
 
-    TModel get(final int position);
+    @Override
+    public VItemModel get(final int position) {
+        return null;
+    }
 
-    boolean isEmpty();
-
+    @Override public boolean isEmpty() {
+        return true;
+    }
 }
