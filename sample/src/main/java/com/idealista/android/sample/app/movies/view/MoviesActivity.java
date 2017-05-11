@@ -1,15 +1,15 @@
 package com.idealista.android.sample.app.movies.view;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
-
 import com.idealista.android.elves.navigator.Navigator;
 import com.idealista.android.elves.view.Adapter;
 import com.idealista.android.elves.view.mvp.view.Activity;
-import com.idealista.android.elves.view.mvp.view.CustomViewCreator;
 import com.idealista.android.elves.view.widget.OnClicked;
 import com.idealista.android.sample.R;
 import com.idealista.android.sample.app.common.customview.CustomViewFactory;
@@ -23,25 +23,20 @@ public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implem
 
     private Adapter<MovieModel> adapter;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    @Override protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
     }
 
-    @Override
-    public void showMessage(String message) {
+    @Override public void showMessage(String message) {
         Toast.makeText(this, message, Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    public void clearMovies() {
+    @Override public void clearMovies() {
         adapter.clear();
     }
 
     private OnClicked<MovieModel> onClickListener = new OnClicked<MovieModel>() {
-
-        @Override
-        public void onClick(@NonNull MovieModel movieModel) {
+        @Override public void onClick(@NonNull MovieModel movieModel) {
             notifyPresenterMovieClicked(movieModel);
         }
     };
@@ -51,29 +46,38 @@ public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implem
         presenter.onMovieClicked(movieModel, navigatorMovie);
     }
 
-    @Override
-    public void addMovies(MoviesModel movies) {
+    @Override public void addMovies(MoviesModel movies) {
         adapter.add(movies);
     }
 
-    @Override
-    public int getLayoutId() {
+    @Override public int getLayoutId() {
         return R.layout.activity_main;
     }
 
-    @Override
-    public void prepare() {
+    @Override public void prepare() {
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
-        RecyclerView.LayoutManager manager =
-                new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
+        RecyclerView.LayoutManager manager = new LinearLayoutManager(getBaseContext(), LinearLayoutManager.VERTICAL, false);
         recyclerView.setLayoutManager(manager);
-        CustomViewCreator<MovieModel> customViewCreator = new CustomViewFactory().getMovieViewCreator();
-        adapter = new Adapter<>(onClickListener, customViewCreator);
+        final CustomViewFactory customViewFactory = new CustomViewFactory();
+        adapter = new Adapter.Builder<MovieModel>().setClickListener(onClickListener)
+                                         .setCustomViewCreator(customViewFactory.getMovieViewCreator())
+                                         .setHeaderCustomView(new HeaderMovieView(getBaseContext()))
+                                         .setFooterCustomView(new FooterMovieView(getBaseContext()))
+                                         .build();
+
         recyclerView.setAdapter(adapter);
+
+        adapter.showHeader();
+
+        new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
+            @Override public void run() {
+                adapter.setFooterCustomView(new LoadingView(getBaseContext()));
+                adapter.hideHeader();
+            }
+        }, 5000);
     }
 
-    @Override
-    public MoviesPresenter getPresenter() {
+    @Override public MoviesPresenter getPresenter() {
         return new GetMoviesPresenter(this).get();
     }
 }
