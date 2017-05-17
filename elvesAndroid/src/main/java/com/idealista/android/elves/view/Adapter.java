@@ -80,6 +80,10 @@ public class Adapter<VItemModel> extends RecyclerView.Adapter<Holder> {
         add(new ListableModel<VItemModel>());
     }
 
+    public ListableModel<VItemModel> getList() {
+        return list.copy();
+    }
+
     @Override public int getItemCount() {
         int itemCount = list.size();
         if (hasToShowHeader) {

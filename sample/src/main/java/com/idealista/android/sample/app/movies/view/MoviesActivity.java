@@ -72,7 +72,6 @@ public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implem
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override public void run() {
                 adapter.setFooterCustomView(new LoadingView(getBaseContext()));
-                adapter.hideHeader();
             }
         }, 5000);
     }
