@@ -45,6 +45,10 @@ public class ListableModel<VItemModel> {
         return list.iterator();
     }
 
+    public ListableModel<VItemModel> copy() {
+        return new ListableModel<>(list);
+    }
+
     @Nullable public VItemModel getFirst() {
         try {
             return get(0);
