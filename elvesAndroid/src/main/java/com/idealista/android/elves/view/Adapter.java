@@ -43,6 +43,11 @@ public class Adapter<VItemModel> extends RecyclerView.Adapter<Holder> {
         notifyDataSetChanged();
     }
 
+    public void addFirst(@NonNull final ListableModel<VItemModel> listable) {
+        list.addFirst(listable);
+        notifyDataSetChanged();
+    }
+
     public void add(@NonNull final VItemModel model) {
         int position = list.add(model);
         notifyItemInserted(position);

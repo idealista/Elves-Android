@@ -11,7 +11,6 @@ public class GetTitlesUseCase extends UseCase<List<String>, MoviesModel> {
 
     @Override
     protected Callable<List<String>> build() {
-
         return new Callable<List<String>>() {
             @Override
             public List<String> call() throws Exception {
