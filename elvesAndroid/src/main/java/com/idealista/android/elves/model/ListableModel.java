@@ -29,6 +29,10 @@ public class ListableModel<VItemModel> {
         return list.indexOf(item);
     }
 
+    public void addFirst(@NonNull final ListableModel<VItemModel> listableModel) {
+        this.list.addAll(0, listableModel.list);
+    }
+
     public int size() {
         return list.size();
     }

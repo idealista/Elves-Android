@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Toast;
+import com.idealista.android.elves.business.Listable;
 import com.idealista.android.elves.navigator.Navigator;
 import com.idealista.android.elves.view.Adapter;
 import com.idealista.android.elves.view.mvp.view.Activity;
@@ -71,7 +72,12 @@ public class MoviesActivity extends Activity<MoviesPresenter, MovieModel> implem
 
         new Handler(Looper.getMainLooper()).postDelayed(new Runnable() {
             @Override public void run() {
-                adapter.setFooterCustomView(new LoadingView(getBaseContext()));
+                final MoviesModel movies = new MoviesModel();
+                movies.add(new MovieModel("Idealista"));
+                movies.add(new MovieModel("Idealista"));
+                movies.add(new MovieModel("Idealista"));
+                movies.add(new MovieModel("Idealista"));
+                adapter.addFirst(movies);
             }
         }, 5000);
     }
