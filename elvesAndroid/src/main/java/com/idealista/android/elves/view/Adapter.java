@@ -45,7 +45,7 @@ public class Adapter<VItemModel> extends RecyclerView.Adapter<Holder> {
 
     public void addFirst(@NonNull final ListableModel<VItemModel> listable) {
         list.addFirst(listable);
-        notifyDataSetChanged();
+        notifyItemRangeInserted(0, listable.size() - 1);
     }
 
     public void add(@NonNull final VItemModel model) {
