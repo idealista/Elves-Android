@@ -10,7 +10,7 @@ public class Holder<VItemModel> extends RecyclerView.ViewHolder {
         super(itemView);
     }
 
-    void bind(VItemModel model) {
+    public void bind(VItemModel model) {
         ( (CustomView<VItemModel>) itemView ).render(model);
     }
 }
