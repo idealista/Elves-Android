@@ -6,7 +6,7 @@ import com.idealista.android.elves.view.widget.CustomView;
 
 public class Holder<VItemModel> extends RecyclerView.ViewHolder {
 
-    Holder(View itemView) {
+    public Holder(View itemView) {
         super(itemView);
     }
 
